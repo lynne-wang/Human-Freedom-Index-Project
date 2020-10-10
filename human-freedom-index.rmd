@@ -1,0 +1,15 @@
+---
+title: "Human Freedom Index Project"
+author: "Team Platypus: Lynne Wang, Neel Gajjar, Kate Neal"
+output: pdf_document
+---
+
+```{r packages-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+hfi <- read_csv("data/hfi_cc_2019.csv") 
+```
+
+```{r glimpse}
+glimpse(hfi)
+```
+
