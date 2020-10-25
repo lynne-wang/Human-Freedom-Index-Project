@@ -13,3 +13,38 @@ hfi <- read_csv("data/hfi_cc_2019.csv")
 glimpse(hfi)
 ```
 
+### Question 1
+
+How has overall freedom around the world changed over time?
+
+```{r q1, warning=FALSE, message=FALSE}
+hfscore_by_year <- hfi %>% 
+  filter(hf_score != "-") %>% 
+  group_by(year) %>% 
+  summarize(mean_hf = mean(as.numeric(hf_score)))
+
+ggplot(data = hfscore_by_year, 
+       aes(x = as.factor(year), y = mean_hf, group = 1)) +
+  geom_line(stat = "identity") +
+  ylim(6.75, 7.25)
+```
+
+### Question 2
+
+How has overall freedom in the U.S. and China changed over time?
+
+```{r q2, warning=FALSE, message=FALSE}
+hfscore_china_us <- hfi %>% 
+  filter(hf_score != "-" & 
+           (countries == "China" | countries == "United States")) %>% 
+  group_by(year, countries) %>% 
+  summarize(mean_hf = mean(as.numeric(hf_score)))
+
+ggplot(data = hfscore_china_us, 
+       aes(x = as.factor(year), y = mean_hf, group = countries, color = countries)) +
+  geom_line(stat = "identity")
+```
+
+### Question 3
+
+
