@@ -26,7 +26,10 @@ hfscore_by_year <- hfi %>%
 ggplot(data = hfscore_by_year, 
        aes(x = as.factor(year), y = mean_hf, group = 1)) +
   geom_line(stat = "identity") +
-  ylim(6.75, 7.25)
+  ylim(6.75, 7.25) + 
+  labs(x = "Year", y = "Human Freedom Score", 
+       title = "Overall Human Freedom on the Decline",
+       subtitle = "2008 to 2017")
 ```
 
 ### Question 2
@@ -64,6 +67,10 @@ hfi %>%
 What is the correlation between economic and personal freedom?
 
 ```{r q4}
+hfi %>% 
+  filter(pf_score != "-" & ef_score != "-") %>% 
+  summarize(cor = cor(as.numeric(ef_score), as.numeric(pf_score)))
+
 corr_efpf <- hfi %>% 
   filter(pf_score != "-" & ef_score != "-") %>% 
   group_by(countries) %>% 
@@ -75,3 +82,90 @@ ggplot(data = corr_efpf, aes(x = corr_ef_pf)) +
   geom_histogram(bins = 20)
 ```
 
+### ===========================================================================
+### Economic and Personal Freedom
+
+```{r economic-and-personal-freedom}
+clean_hfi <- hfi %>% 
+  filter(pf_score != "-" & ef_score != "-") %>% 
+  group_by(countries) %>% 
+  mutate(mean_pf = mean(as.numeric(pf_score)),
+         mean_ef = mean(as.numeric(ef_score))) %>% 
+  mutate(diff_ef_pf = mean_ef - mean_pf) %>% 
+  slice(1) %>% 
+  summarize(countries, mean_ef, mean_pf, diff_ef_pf)
+
+mean_diff <- clean_hfi %>% 
+  summarize(mean_diff = mean(diff_ef_pf))
+
+ggplot(data = clean_hfi, aes(x = diff_ef_pf)) +
+  geom_histogram(bins = 30) +
+  geom_vline(linetype = "dashed", xintercept = c(mean_diff$mean_diff)) +
+  labs(x = "Difference in Economic and Personal Freedom Score", 
+       y = "Count", 
+       title = "Histogram of Differences in Economic and Personal Freedom Score",
+       subtitle = "Average Diffs from 2008 to 2017, 162 Countries")
+```
+
+Null Hypothesis: the difference between mean economic freedom score and mean personal freedom score is greater than or equal to zero.
+
+Alternative Hypothesis: the difference between mean economic freedom score and mean personal freedom score is less than zero.
+
+$H_0$: $\mu$ $\geq$ 0
+
+$H_A$: $\mu$ < 0
+
+```{r bootstrap-ef-pf-95-conf}
+set.seed(10)
+n_sims <- 500
+boot_dist = numeric(n_sims) 
+for(i in 1:n_sims){ 
+  indices <- sample(1:nrow(clean_hfi), replace = T)
+  boot_mean <- clean_hfi %>% 
+    slice(indices) %>%                    
+    summarize(boot_mean = mean(diff_ef_pf)) %>% 
+    pull()                                
+  boot_dist[i] <- boot_mean 
+}
+
+boot_means = tibble(boot_dist)
+mu_0 <- 0
+offset <- boot_means %>% 
+  summarize(mu_0 - mean(boot_dist)) %>%
+  pull()
+boot_means <- boot_means %>%
+  mutate(shifted_means = boot_dist + offset)
+boot_1 <- boot_means%>%
+  summarize(lower = quantile(shifted_means, 0.025), 
+            upper = quantile(shifted_means, 0.975))
+boot_1
+```
+
+```{r bootstrap-ef-pf-obs-diff}
+obs_mean <- clean_hfi %>% 
+  summarize(mean(diff_ef_pf)) %>% 
+  pull()
+obs_mean
+```
+
+```{r bootstrap-ef-pfp-val}
+obs_diff <- mu_0 - obs_mean
+boot_means %>% 
+  mutate(extreme = ifelse(shifted_means <= mu_0 - obs_diff |
+                          shifted_means >= mu_0 + obs_diff, 1, 0)) %>% 
+  summarize(p_val = mean(extreme))
+```
+
+```{r bootstrap-ef-pf-visualization, warning=FALSE, message=FALSE}
+ggplot(data = boot_means, aes(x = shifted_means)) +
+  geom_histogram(color = "darkblue", fill = "skyblue") + 
+  labs(x = "Difference in Economic and Personal Freedom Score", y = "Count", 
+       title = "Sufficient Evidence to Suggest Difference Between 
+       Economic and Personal Freedom Scores is Less than Zero",
+       subtitle = "500 bootstrap reps with Observed Prop and 95% CI shown") +
+  geom_vline(xintercept = c(boot_1$lower, boot_1$upper),
+             color = "red") +
+  geom_vline(linetype = "dashed", xintercept = c(mean_diff$mean_diff))
+```
+
+Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
