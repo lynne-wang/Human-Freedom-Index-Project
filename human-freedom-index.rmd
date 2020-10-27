@@ -6,6 +6,14 @@ output: pdf_document
 
 ```{r packages-data, warning=FALSE, message=FALSE}
 library(tidyverse)
+library(ggplot2)
+library(dplyr)
+require(maps)
+require(viridis)
+
+theme_set(
+  theme_void()
+  )
 hfi <- read_csv("data/hfi_cc_2019.csv") 
 ```
 
@@ -32,14 +40,36 @@ ggplot(data = hfscore_by_year,
        subtitle = "2008 to 2017")
 ```
 
+### Average Freedom Around the World
+```{r freedom-map}
+summarized_hfi <- hfi %>% 
+  filter(hf_score != "-") %>% 
+  group_by(countries) %>% 
+  mutate(mean_hf = mean(as.numeric(hf_score))) %>% 
+  slice(1) %>% 
+  mutate(countries = ifelse(countries == "United States", "USA", countries)) %>% 
+  summarize(countries, mean_hf)
+
+world_map <- map_data("world")
+freedom_map <- left_join(world_map, summarized_hfi, by = c("region" = "countries"))
+
+# Create the map
+ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = as.numeric(mean_hf)), color = "white") +
+  scale_fill_distiller(palette ="RdBu", direction = 1)
+```
+
 ### ===========================================================================
 ### Economic and Personal Freedom
 
 How do different countries' economic and personal freedom scores compare?
 
 ```{r economic-and-personal-freedom}
-clean_hfi <- hfi %>% 
-  filter(pf_score != "-" & ef_score != "-") %>% 
+no_na_hfi <- hfi %>% 
+  filter(pf_score != "-" & ef_score != "-")
+
+clean_hfi <- no_na_hfi %>% 
   group_by(countries) %>% 
   mutate(mean_pf = mean(as.numeric(pf_score)),
          mean_ef = mean(as.numeric(ef_score))) %>% 
@@ -129,8 +159,7 @@ Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 si
 ### Economic and Personal Freedom Difference By Region
 
 ```{r region-economic-personal-diff, warning=FALSE, message=FALSE}
-region_hfi <- hfi %>% 
-  filter(pf_score != "-" & ef_score != "-") %>% 
+region_hfi <- no_na_hfi %>% 
   group_by(region) %>% 
   mutate(mean_pf = mean(as.numeric(pf_score)),
          mean_ef = mean(as.numeric(ef_score))) %>% 
@@ -155,9 +184,6 @@ From our graph, it appears that economic freedom is significantly higher than pe
 ### Correlation Between Economic and Personal Freedom
 
 ```{r corr-ef-pf}
-no_na_hfi <- hfi %>% 
-  filter(pf_score != "-" & ef_score != "-")
-
 corr_efpf <- no_na_hfi %>% 
   summarize(cor_ef_pf = cor(as.numeric(ef_score), as.numeric(pf_score)))
 corr_efpf
@@ -174,3 +200,14 @@ ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score),
 ```
 
 It appears that there is a positive and linear relationship between economic freedom score and personal freedom score.
+
+### Relationship Between Freedom and Cold War Status
+
+
+
+* It appears that there is a lower limit to economic freedom, compared to personal freedom.
+
+Remaining Questions to Explore:
+- It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
+- Look at relationship between size of government and freedom
+- Look at relationship between regulation and overall freedom
