@@ -85,6 +85,8 @@ ggplot(data = corr_efpf, aes(x = corr_ef_pf)) +
 ### ===========================================================================
 ### Economic and Personal Freedom
 
+How do different countries' economic and personal freedom scores compare?
+
 ```{r economic-and-personal-freedom}
 clean_hfi <- hfi %>% 
   filter(pf_score != "-" & ef_score != "-") %>% 
@@ -106,6 +108,10 @@ ggplot(data = clean_hfi, aes(x = diff_ef_pf)) +
        title = "Histogram of Differences in Economic and Personal Freedom Score",
        subtitle = "Average Diffs from 2008 to 2017, 162 Countries")
 ```
+
+### Economic and Personal Freedom Differences - Bootstrap Simulation
+
+On average, is there a difference between a country's economic freedom score and personal freedom score?
 
 Null Hypothesis: the difference between mean economic freedom score and mean personal freedom score is greater than or equal to zero.
 
@@ -169,3 +175,52 @@ ggplot(data = boot_means, aes(x = shifted_means)) +
 ```
 
 Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
+
+### Economic and Personal Freedom Difference By Region
+
+```{r region-economic-personal-diff, warning=FALSE, message=FALSE}
+region_hfi <- hfi %>% 
+  filter(pf_score != "-" & ef_score != "-") %>% 
+  group_by(region) %>% 
+  mutate(mean_pf = mean(as.numeric(pf_score)),
+         mean_ef = mean(as.numeric(ef_score))) %>% 
+  mutate(diff_ef_pf = mean_ef - mean_pf,
+         score = ifelse(diff_ef_pf > 0, 
+                        "ef_score > pf_score", "ef_score < pf_score")) %>% 
+  slice(1) %>% 
+  summarize(region, mean_ef, mean_pf, diff_ef_pf, score)
+
+ggplot(data = region_hfi, aes(x = reorder(region, diff_ef_pf), 
+                              y = diff_ef_pf, fill = score)) +
+  geom_col() + 
+  theme(axis.text.x = element_text(angle = 30)) +
+  labs(x = "Region", y = "Diff in EF and PF Scores", 
+       title = "Personal Freedom Lagging Behind 
+       Economic Freedom in Developing Countries",
+       subtitle = "Data from 162 countries from 2008-2017")
+```
+
+From our graph, it appears that economic freedom is significantly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom appears to be much higher than economic freedom in developed countries, particularly in Western countries.
+
+### Correlation Between Economic and Personal Freedom
+
+```{r corr-ef-pf}
+no_na_hfi <- hfi %>% 
+  filter(pf_score != "-" & ef_score != "-")
+
+corr_efpf <- no_na_hfi %>% 
+  summarize(cor_ef_pf = cor(as.numeric(ef_score), as.numeric(pf_score)))
+corr_efpf
+```
+
+```{r corr-ef-pf-scatterplot, warning=FALSE, message=FALSE}
+ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score), 
+                             y = as.numeric(pf_score))) +
+  geom_point(alpha = 0.5, position = "jitter") + 
+  geom_smooth(method="lm") +
+  labs(x = "Economic Freedom Score", y = "Personal Freedom Score", 
+       title = "Positive Correlation Between Economic and Personal Freedom",
+       subtitle = "Data from 162 countries from 2008-2017")
+```
+
+
