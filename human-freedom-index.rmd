@@ -32,56 +32,6 @@ ggplot(data = hfscore_by_year,
        subtitle = "2008 to 2017")
 ```
 
-### Question 2
-
-How has overall freedom in the U.S. and China changed over time?
-
-```{r q2, warning=FALSE, message=FALSE}
-hfscore_china_us <- hfi %>% 
-  filter(hf_score != "-" & 
-           (countries == "China" | countries == "United States")) %>% 
-  group_by(year, countries) %>% 
-  summarize(mean_hf = mean(as.numeric(hf_score)))
-
-ggplot(data = hfscore_china_us, 
-       aes(x = as.factor(year), y = mean_hf, group = countries, color = countries)) +
-  geom_line(stat = "identity")
-```
-
-### Question 3
-
-In countries with the highest overall freedom scores, which freedoms are particularly high?
-
-```{r q3, warning=FALSE, message=FALSE}
-hfi %>% 
-  filter(hf_rank != "-") %>% 
-  group_by(countries) %>% 
-  mutate(avg_rank = mean(as.numeric(hf_rank))) %>% 
-  distinct(countries, avg_rank) %>% 
-  arrange(desc(avg_rank)) %>% 
-  summarize(countries, avg_rank)
-```
-
-### Question 4
-
-What is the correlation between economic and personal freedom?
-
-```{r q4}
-hfi %>% 
-  filter(pf_score != "-" & ef_score != "-") %>% 
-  summarize(cor = cor(as.numeric(ef_score), as.numeric(pf_score)))
-
-corr_efpf <- hfi %>% 
-  filter(pf_score != "-" & ef_score != "-") %>% 
-  group_by(countries) %>% 
-  mutate(corr_ef_pf = cor(as.numeric(ef_score), as.numeric(pf_score))) %>% 
-  distinct(countries, corr_ef_pf) %>% 
-  summarize(countries, corr_ef_pf)
-
-ggplot(data = corr_efpf, aes(x = corr_ef_pf)) +
-  geom_histogram(bins = 20)
-```
-
 ### ===========================================================================
 ### Economic and Personal Freedom
 
@@ -223,4 +173,4 @@ ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score),
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
-
+It appears that there is a positive and linear relationship between economic freedom score and personal freedom score.
