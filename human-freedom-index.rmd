@@ -10,9 +10,8 @@ library(ggplot2)
 library(dplyr)
 require(maps)
 require(viridis)
-
 theme_set(
-  theme_void()
+  theme_gray()
   )
 hfi <- read_csv("data/hfi_cc_2019.csv") 
 ```
@@ -201,11 +200,77 @@ ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score),
 
 It appears that there is a positive and linear relationship between economic freedom score and personal freedom score.
 
+* It appears that there is a lower limit to economic freedom, compared to personal freedom.
+
 ### Relationship Between Freedom and Cold War Status
 
+Mean Government Size From 2008-2017, Post-Soviet and NATO Countries
 
+```{r coldwar, warning=FALSE, message=FALSE}
+hfi_coldwar <- hfi %>% 
+  mutate(post_soviet = ifelse(countries == "Russia" | 
+                                countries == "Ukraine" | 
+                                countries == "Moldova" | 
+                                countries == "Uzbekistan" | 
+                                countries == "Kazakhstan" | 
+                                countries == "Kyrgyzstan" | 
+                                countries == "Tajikistan" | 
+                                countries == "Turkmenistan" | 
+                                countries == "Georgia" | 
+                                countries == "Azerbaijan" | 
+                                countries == "Armenia" | 
+                                countries == "Lithuania" | 
+                                countries == "Latvia" | 
+                                countries == "Estonia", "yes", "no")) %>% 
+  mutate(nato = ifelse(countries == "Belgium" | 
+                         countries == "Canada" | 
+                         countries == "Denmark" | 
+                         countries == "France" | 
+                         countries == "Germany" | 
+                         countries == "Greece" | 
+                         countries == "Iceland" | 
+                         countries == "Italy" | 
+                         countries == "Luxembourg" | 
+                         countries == "Netherlands" | 
+                         countries == "Norway" | 
+                         countries == "Portugal" | 
+                         countries == "Spain" | 
+                         countries == "Turkey" | 
+                         countries == "United Kingdom" | 
+                         countries == "United States", "yes", "no")) %>% 
+  filter(post_soviet == "yes" | nato == "yes") %>% 
+  mutate(coldwar_side = ifelse(post_soviet == "yes", "soviet", "western"))
+  
 
-* It appears that there is a lower limit to economic freedom, compared to personal freedom.
+ef_govt_coldwar <- hfi_coldwar %>% 
+  filter(ef_government != "-") %>% 
+  select(countries, coldwar_side, year, ef_government) %>% 
+  group_by(year, coldwar_side) %>% 
+  mutate(mean_ef_government = mean(as.numeric(ef_government)))
+
+ggplot(data = ef_govt_coldwar, 
+       aes(x = as.factor(year), y = mean_ef_government, group = coldwar_side, color = coldwar_side)) +
+  geom_line(stat = "identity") +
+  labs(x = "Year", y = "Smaller Government", 
+       title = "Post-Soviet Countries Have Smaller Governments Than Western Countries",
+       subtitle = "2008 to 2017, Higher Score = Smaller Government") +
+  theme(axis.line.y = element_line(arrow = arrow()))
+
+hf_coldwar <- hfi_coldwar %>% 
+  filter(hf_score != "-") %>% 
+  select(countries, coldwar_side, year, hf_score) %>% 
+  group_by(year, coldwar_side) %>% 
+  mutate(mean_hf = mean(as.numeric(hf_score)))
+
+ggplot(data = hf_coldwar, 
+       aes(x = as.factor(year), y = mean_hf, group = coldwar_side, color = coldwar_side)) +
+  geom_line(stat = "identity") +
+  labs(x = "Year", y = "Human Freedom Score", 
+       title = "Post-Soviet Countries Less Free Than Western Countries",
+       subtitle = "2008 to 2017")
+```
+
+It appears that former Soviet countries' governments have been decreasing in size, while Western countries' governments have been increasing in size. Smaller government doesn't necessarily lead to more freedom.
 
 Remaining Questions to Explore:
 - It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
