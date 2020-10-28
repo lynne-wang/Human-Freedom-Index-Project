@@ -276,3 +276,39 @@ Remaining Questions to Explore:
 - It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
 - Look at relationship between size of government and freedom
 - Look at relationship between regulation and overall freedom
+
+###Women's freedom stuff
+```{r unweighting-wsf}
+hfi_womenunweighted <- hfi%>%
+  select(-pf_ss_women, -pf_ss_women_fgm, -pf_ss_women_inheritance, 
+         -pf_ss_women_inheritance_daughters, -pf_ss_women_inheritance_widows,
+         -pf_movement_women, -pf_identity_sex_female, -pf_identity_divorce)
+#check -> could not find pf_legal_gender?
+#hfi_womenunweighted <- hfi_womenunweighted%>%
+#  mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) + as.numeric(pf_movement_foreign)/2)
+#hfi_womenunweighted$pf_movement = (as.numeric(hfi_womenunweighted$pf_movement_domestic) + #as.numeric(hfi_womenunweighted$pf_movement_foreign)/2)
+```
+```{r scatter-women-vs-overall}
+ws_only <- hfi%>%
+  select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
+         pf_ss_women_inheritance_daughters, pf_ss_women_inheritance_widows,
+         pf_movement_women, pf_identity_sex_female, pf_identity_divorce, hf_score)
+#average these (if not is.na, as.numeric) to get overall w-s freedom score
+#mutate, new variable for correlation b/w w-s score and overall score
+#scatterplot
+```
+
+```{r women-religion}
+#scatterplot: are there any outliers? explore that
+#bootstrap avg correlation b/w women freedom and each aspect of religion freedom
+#  ... to see if some are more / less correlated than others
+```
+
+```{r ws-personal-economic-hyptohesis}
+#can defintiely do simulation based
+#possibly mutate to create correlation variable for each and do clt?
+```
+Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+
+Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+
