@@ -278,36 +278,107 @@ Remaining Questions to Explore:
 - Look at relationship between regulation and overall freedom
 
 ###Women's freedom stuff
-```{r unweighting-wsf}
-hfi_womenunweighted <- hfi%>%
-  select(-pf_ss_women, -pf_ss_women_fgm, -pf_ss_women_inheritance, 
-         -pf_ss_women_inheritance_daughters, -pf_ss_women_inheritance_widows,
-         -pf_movement_women, -pf_identity_sex_female, -pf_identity_divorce)
-#check -> could not find pf_legal_gender?
-#hfi_womenunweighted <- hfi_womenunweighted%>%
-#  mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) + as.numeric(pf_movement_foreign)/2)
-#hfi_womenunweighted$pf_movement = (as.numeric(hfi_womenunweighted$pf_movement_domestic) + #as.numeric(hfi_womenunweighted$pf_movement_foreign)/2)
+```{r unweighting-wsf, message = FALSE}
+hfi <- hfi%>%
+  mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) 
+                                + as.numeric(pf_movement_foreign))/2)
+hfi <- hfi%>%
+  mutate(pf_ss_nowomen = (as.numeric(pf_ss_homicide) 
+                          + as.numeric(pf_ss_disappearances))/2)
+hfi <- hfi%>%
+  mutate(pf_identity_nowomen = (as.numeric(pf_identity_legal) 
+                          + as.numeric(pf_identity_sex_male))/2)
+
+hfi <- hfi%>%
+  mutate(pf_rol = as.numeric(pf_rol))%>%
+  mutate(pf_religion = as.numeric(pf_religion))%>%
+  mutate(pf_association = as.numeric (pf_association))%>%
+  mutate(pf_expression = as.numeric(pf_expression))%>%
+  mutate(ef_score = as.numeric(ef_score))%>%
+  mutate(hfi_women_unweighted = (ef_score * 0.5) 
+         + (pf_rol * 0.125)
+         + (pf_ss_nowomen * 0.125)
+         + (pf_movement_nowomen * 0.05)
+         + (pf_identity_nowomen * 0.05)
+         + (pf_expression * 0.05)
+         + (pf_association * 0.05)
+         + (pf_religion * 0.05))
+hfi <- hfi%>%
+  mutate(pf_score_nowomen = (pf_rol * 0.25)
+         + (pf_ss_nowomen * 0.25)
+         + (pf_movement_nowomen * 0.1)
+         + (pf_identity_nowomen * 0.1)
+         + (pf_expression * 0.1)
+         + (pf_association * 0.1)
+         + (pf_religion * 0.1))
+
+#what to do about na values?
+#note: include in methodology why you did math this way
+
 ```
-```{r scatter-women-vs-overall}
+
+
+```{r correlation-women-vs-overall}
 ws_only <- hfi%>%
   select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
          pf_ss_women_inheritance_daughters, pf_ss_women_inheritance_widows,
-         pf_movement_women, pf_identity_sex_female, pf_identity_divorce, hf_score)
-#average these (if not is.na, as.numeric) to get overall w-s freedom score
-#mutate, new variable for correlation b/w w-s score and overall score
-#scatterplot
+         pf_movement_women, pf_identity_sex_female, pf_identity_divorce, hfi_women_unweighted)
+ws_only <- ws_only%>%
+  mutate(pf_ss_women = as.numeric(pf_ss_women))%>%
+  mutate(pf_movement_women = as.numeric(pf_movement_women))%>%
+  mutate(pf_identity_divorce = as.numeric(pf_identity_divorce))%>%
+  mutate(pf_identity_sex_female = as.numeric(pf_identity_sex_female))%>%
+
+  mutate(ws_score = (((pf_identity_divorce + pf_identity_sex_female)/2) + pf_ss_women + pf_movement_women)/3)
+
+ws_no_na <- ws_only%>%
+    filter(!is.na(hfi_women_unweighted) & !is.na(ws_score)) 
+
+corr_ws_hf <- ws_no_na%>%
+  summarize(cor_ws_hfi = cor(hfi_women_unweighted, ws_score))
+corr_ws_hf
 ```
 
-```{r women-religion}
-#scatterplot: are there any outliers? explore that
-#bootstrap avg correlation b/w women freedom and each aspect of religion freedom
-#  ... to see if some are more / less correlated than others
+```{r ws-hfi-scatter}
+ggplot(data = ws_no_na, aes(x = ws_score, 
+                             y = hfi_women_unweighted)) +
+  geom_point(alpha = 0.5, position = "jitter") + 
+  geom_smooth(method="lm") +
+  labs(x = "Women-Specific Freedoms Score", y = "Overall Freedom Score", 
+       title = "Positive Correlation Between Women-Specific and Overall Freedom",
+       subtitle = "Data from 162 countries from 2008-2017")
 ```
 
-```{r ws-personal-economic-hyptohesis}
+
+{r ws-personal-economic-hyptohesis}
 #can defintiely do simulation based
-#possibly mutate to create correlation variable for each and do clt?
-```
+set.seed(10)
+n_sims <- 2000
+boot_dist = numeric(n_sims) 
+for(i in 1:n_sims){ 
+  indices <- sample(1:nrow(ws_no_na), replace = T)
+  boot_cor <- ws_no_na %>% 
+    slice(indices) %>%                    
+    summarize(boot_cor = cor(ws_score, hfi_women_unweighted)) %>% 
+    pull()                                
+  boot_dist[i] <- boot_cor 
+}
+
+boot_cors = tibble(boot_dist)
+
+mu_0 <- 0
+offset <- boot_cors %>% 
+  summarize(mu_0 - mean(boot_dist)) %>%
+  pull()
+
+boot_cors <- boot_cors %>%
+  mutate(shifted_cors = boot_dist + offset)
+
+boot_2 <- boot_cors%>%
+  summarize(lower = quantile(shifted_cors, 0.005), 
+            upper = quantile(shifted_cors, 0.995))
+boot_2
+
 Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
 Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
