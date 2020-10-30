@@ -16,38 +16,9 @@ theme_set(
 hfi <- read_csv("data/hfi_cc_2019.csv") 
 ```
 
-### Introduction
-
-Freedom is one of the most crucial concepts in the modern world, playing a large role in human progress and the dignity of individuals. Freedom is of great value to humanity as it can protect humans against natural disasters, social problems, and economic issues by expanding the set of human choices and offering constructive democratic relations in society (Jafarzadeh 323). Though freedom itself is a rather abstract term that can be difficult to quantify, it can be broken down into various measures encompassing personal, civic, and economic freedom. We are particularly interested in negative liberty, defined as freedom from interference by other people, or the absence of coercive constraint. Positive liberty, on the other hand, has vastly different meanings for different individuals and is more difficult to measure. Moreover, one individual’s conception of positive liberty can interfere with others’ negative liberty, so it is more worthwhile to measure the latter. 
-
-
-While freedom has always been an essential topic across the globe, it has been especially relevant in recent years, following an alarming rise in authoritarian regimes across the world and a continual struggle between power and liberty. As the world has become ever more globalized, we are beginning to see stark differences between the quality of life of individuals in countries with varying degrees of overall freedom. It appears that the general trajectory of modernization is not evenly distributed across different countries, and modernization itself does not always go hand in hand with greater freedom. As we continue to face ever-present issues of political tensions and uneven distribution of resources, along with emerging issues such as pandemics and the potential dangers of new technologies, freedom must be carefully observed and negotiated to promote the best possible outcome for societies.
-
-
-We wish to isolate the relationships between freedom and other social and economic phenomena, as well as understand the ways in which different facets of freedom interact with each other. In particular, we will examine whether social, economic, and personal liberties can stand alone or must necessarily hinge on each other. We are also interested in which attributes of freedom contribute the most to a country or region’s overall freedom, as well as which regions rank extremely in particular and overall freedom. Moreover, we would like to map the flux in global or regional freedom over the past few years and observe which particular freedoms have experienced the most significant change.
-
-
-From prevailing research, we hypothesize that economic freedom is essential and positively correlated with all other freedoms and that it is a crucial component of overall freedom. We believe that higher scores on women-specific freedoms are positively correlated with all other freedoms and that personal freedom is positively correlated with political freedom. In accordance with the increase of authoritarian regimes around the globe, we hypothesize that overall freedom has decreased over the past few years, particularly political and personal liberties. We believe the US and China in particular have experienced a significant decrease in overall freedom in the wake of their recent strongman political regimes.
-
-
-### Data Description
-
-The observations in this dataset follow 162 countries over several years, for a total of 1620 observations (162 countries, 10 years) and 120 variables. Countries were limited to those represented in the Economic Freedoms of the World report (Gwartney et al). Beginning in 2008, which was the first year enough data could be found to create a robust index, through 2017, 79 different indicators of personal and economic freedom were measured for the different countries. These specific indicators were used to give each country a freedom index, on a scale of 0 to 10, where 10 represents more freedom. The abstract term of freedom, in this context, was interpreted to be a “social concept that recognizes the dignity of individuals and is defined by the absence of coercive constraint.” 
-
-
-The indicators fell into the following categories: rule of law, security and safety, movement, religion, association, assembly, and civil society, expression and information, identity and relationships, size of government, legal system and property rights, access to sound money, freedom to trade internationally, and regulation of credit, labor, and business. To get the final overall freedom index value, the economic freedom subindex (size of government, legal system and property rights, access to sound money, freedom to trade internationally, and regulation of credit, labor, and business) receives half the weight, while safety and security and other personal freedoms receive the remaining weight. Within each subindex, indicators (37 from the personal freedom subindex and 42 from the economic freedom subindex) within each category were weighted equally (averaged) to get a score between 0 and 10 for each indicator. Categories were weighted equally in the economic freedom subindex and rule of law and safety and security were weighted half of the personal freedom subindex, while the other categories equally made up the other half. 
-
-
-The data contributing to the numerical values for each of the indicators came from the following criteria: credible external sources, not generated by researchers doing the index analysis, transparent on methodology and sources, and covering as large a number of countries over as long a time period as possible. The 0-10 numerical values in each indicator already existed from other indices, such as the Global Peace Index, the Rule of Law Index, or the Economic Freedoms of the World Index (Gwartney et al). For countries not included in any given index, values were determined by regressing said index’s measures with other measures that data was obtainable for within that indicator. For example, countries not in the Rule of Law Index were regressed with rule of law measures from the World Bank’s Worldwide Governance Indicators. 
-
-### Glimpse of Data
-
 ```{r glimpse}
 glimpse(hfi)
 ```
-
-
-### Methodology
 
 ### Question 1
 
@@ -209,8 +180,6 @@ ggplot(data = region_hfi, aes(x = reorder(region, diff_ef_pf),
 
 From our graph, it appears that economic freedom is significantly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom appears to be much higher than economic freedom in developed countries, particularly in Western countries.
 
-- ****Linear regression for region
-
 ### Correlation Between Economic and Personal Freedom
 
 ```{r corr-ef-pf}
@@ -303,15 +272,13 @@ ggplot(data = hf_coldwar,
 
 It appears that former Soviet countries' governments have been decreasing in size, while Western countries' governments have been increasing in size. Smaller government doesn't necessarily lead to more freedom.
 
-- ****T-test 
-
 Remaining Questions to Explore:
 - It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
 - Look at relationship between size of government and freedom
 - Look at relationship between regulation and overall freedom
 
 ###Women's freedom stuff
-```{r unweighting-wsf, warning=FALSE, message=FALSE}
+```{r unweighting-wsf, message = FALSE}
 hfi <- hfi%>%
   mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) 
                                 + as.numeric(pf_movement_foreign))/2)
@@ -351,7 +318,7 @@ hfi <- hfi%>%
 ```
 
 
-```{r correlation-women-vs-overall, warning=FALSE, message=FALSE}
+```{r correlation-women-vs-overall}
 ws_only <- hfi%>%
   select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
          pf_ss_women_inheritance_daughters, pf_ss_women_inheritance_widows,
@@ -372,7 +339,7 @@ corr_ws_hf <- ws_no_na%>%
 corr_ws_hf
 ```
 
-```{r ws-hfi-scatter, warning=FALSE, message=FALSE}
+```{r ws-hfi-scatter}
 ggplot(data = ws_no_na, aes(x = ws_score, 
                              y = hfi_women_unweighted)) +
   geom_point(alpha = 0.5, position = "jitter") + 
@@ -381,10 +348,10 @@ ggplot(data = ws_no_na, aes(x = ws_score,
        title = "Positive Correlation Between Women-Specific and Overall Freedom",
        subtitle = "Data from 162 countries from 2008-2017")
 ```
+It appears that there is a somewhat linear positive correlation between overall freedom score, and women-specific freedom score, with a few outliers. 
 
-
-{r ws-personal-economic-hyptohesis}
-#can defintiely do simulation based
+```{r ws-personal-economic-hyptohesis}
+#this needs work
 set.seed(10)
 n_sims <- 2000
 boot_dist = numeric(n_sims) 
@@ -411,12 +378,12 @@ boot_2 <- boot_cors%>%
   summarize(lower = quantile(shifted_cors, 0.005), 
             upper = quantile(shifted_cors, 0.995))
 boot_2
-
+```
 Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
 Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
-### Results
 
-### Discussion
+
+###METHODOLOGY 
 
