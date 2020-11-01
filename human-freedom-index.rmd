@@ -213,7 +213,7 @@ From our graph, it appears that economic freedom is significantly higher than pe
 
 ```{r linreg-region}
 linreg_reg <- hfi %>% 
-  filter(hf_score != "-")
+  filter(ef_score != "-" & pf_score != "-")
 m_hf_reg <- lm(as.numeric(ef_score) - as.numeric(pf_score) ~ region, data = linreg_reg)
 tidy(m_hf_reg) %>% 
   arrange(estimate)
@@ -334,7 +334,49 @@ ggplot(data = hf_coldwar,
 
 It appears that former Soviet countries' governments have been decreasing in size, while Western countries' governments have been increasing in size. Smaller government doesn't necessarily lead to more freedom.
 
-- ****T-test 
+- ****Linear Regression
+
+```{r linreg-coldwar-govt-size}
+coldwar_govtsize_reg <- hfi_coldwar %>% 
+  filter(hf_score != "-")
+m_hf_reg <- lm(as.numeric(hf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
+               data = coldwar_govtsize_reg)
+tidy(m_hf_reg) %>% 
+  arrange(estimate) 
+```
+
+Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
+
+Human Freedom Score for Western Countries: 8.84 - 0.11(ef_government)
+
+Human Freedom Score for Post-Soviet Countries: 4.26 + 0.44(ef_government) 
+
+For the average country on the Western side in the Cold War, their average human freedom score in the past decade has been 8.84 at an ef_government score of 0 (large government), and it is 0.11 points lower for every additional point in the ef_government score (smaller government).
+
+For the average country on the Soviet side in the Cold War, their average human freedom score in the past decade has been 4.26 at an ef_government score of 0 (large government), and it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+
+It appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
+
+```{r p-linreg-coldwar-govt-size}
+p_coldwar_govtsize_reg <- hfi_coldwar %>% 
+  filter(pf_score != "-")
+m_hf_reg <- lm(as.numeric(pf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
+               data = p_coldwar_govtsize_reg)
+tidy(m_hf_reg) %>% 
+  arrange(estimate) 
+```
+
+Personal Freedom Score = 4.49 + 5.99(If Western) + 0.44(ef_government) - 0.72(ef_government * If Western)
+
+Personal Freedom Score for Western Countries: 10.48 - 0.28(ef_government)
+
+Personal Freedom Score for Post-Soviet Countries: 4.49 + 0.44(ef_government) 
+
+For the average country on the Western side in the Cold War, their average personal freedom score in the past decade has been 10.48 at an ef_government score of 0 (large government), and it is 0.28 points lower for every additional point in the ef_government score (smaller government).
+
+For the average country on the Soviet side in the Cold War, their average personal freedom score in the past decade has been 4.49 at an ef_government score of 0 (large government), and it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+
+It appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
 
 Remaining Questions to Explore:
 - It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
