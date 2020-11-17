@@ -16,6 +16,9 @@ theme_set(
 hfi <- read_csv("data/hfi_cc_2019.csv") 
 ```
 
+```{r set-warning-message-echo}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
+```
 ### Introduction
 
 Freedom is one of the most crucial concepts in the modern world, playing a large role in human progress and the dignity of individuals. Freedom is of great value to humanity as it can protect humans against natural disasters, social problems, and economic issues by expanding the set of human choices and offering constructive democratic relations in society (Jafarzadeh 323). Though freedom itself is a rather abstract term that can be difficult to quantify, it can be broken down into various measures encompassing personal, civic, and economic freedom. We are particularly interested in negative liberty, defined as freedom from interference by other people, or the absence of coercive constraint. Positive liberty, on the other hand, has vastly different meanings for different individuals and is more difficult to measure. Moreover, one individual’s conception of positive liberty can interfere with others’ negative liberty, so it is more worthwhile to measure the latter. 
