@@ -89,6 +89,8 @@ ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
   coord_fixed(1.3) +
   geom_polygon(aes(fill = as.numeric(mean_hf)), color = "white") +
   scale_fill_distiller(palette ="RdBu", direction = 1)
+
+#add labels
 ```
 
 ### ===========================================================================
@@ -386,7 +388,8 @@ Remaining Questions to Explore:
 - Look at relationship between size of government and freedom
 - Look at relationship between regulation and overall freedom
 
-###Women's freedom stuff
+### Women-Specific Freedoms
+
 ```{r unweighting-wsf, warning=FALSE, message=FALSE}
 hfi <- hfi%>%
   mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) 
@@ -421,12 +424,11 @@ hfi <- hfi%>%
          + (pf_association * 0.1)
          + (pf_religion * 0.1))
 
-#what to do about na values?
-#note: include in methodology why you did math this way
-
+#katea: include in methodology why you did math this way
 ```
+Women-specific freedoms were unweighted from overall freedom to remove any affect on the correlation. 
 
-
+What is the correlation between women-specific freedom and overall freedom? 
 ```{r correlation-women-vs-overall, warning=FALSE, message=FALSE}
 ws_only <- hfi%>%
   select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
@@ -447,7 +449,9 @@ corr_ws_hf <- ws_no_na%>%
   summarize(cor_ws_hfi = cor(hfi_women_unweighted, ws_score))
 corr_ws_hf
 ```
+The correlation of women-specific freedom and overall freedom is 0.505, indicating that there is a moderate positive correlation between the two. 
 
+Visualizing correlation between women-specific and overall freedom.
 ```{r ws-hfi-scatter, warning=FALSE, message=FALSE}
 ggplot(data = ws_no_na, aes(x = ws_score, 
                              y = hfi_women_unweighted)) +
@@ -461,9 +465,9 @@ ggplot(data = ws_no_na, aes(x = ws_score,
 
 It appears that there is a somewhat linear positive correlation between overall freedom score, and women-specific freedom score, with a few outliers. 
 
+### W-S freedom to personal vs economic freedom - Bootstrap Simulation
 
 ```{r ws-personal-economic-hyptohesis}
-#can defintiely do simulation based
 set.seed(10)
 n_sims <- 2000
 boot_dist = numeric(n_sims) 
@@ -491,10 +495,25 @@ boot_2 <- boot_cors%>%
             upper = quantile(shifted_cors, 0.995))
 boot_2
 ```
+```{r bootstrap-ws-ef-pf-obs-diff}
+obs_cor <- ws_no_na %>% 
+  summarize(cor(ws_score, hfi_women_unweighted)) %>% 
+  pull()
+obs_cor
+```
 
+```{r bootstrap-ws-ef-pf-val}
+#obs_cor <- mu_0 - obs_cor
+#boot_cors %>% 
+#  mutate(extreme = ifelse(shifted_means <= mu_0 - obs_diff |
+#                          shifted_means >= mu_0 + obs_diff, 1, 0)) %>% 
+#  summarize(p_val = mean(extreme))
+```
 Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
 Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+
+
 
 ### Results
 
