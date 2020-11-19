@@ -215,39 +215,6 @@ ggplot(data = region_hfi, aes(x = reorder(region, diff_ef_pf),
 
 From our graph, it appears that economic freedom is significantly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom appears to be much higher than economic freedom in developed countries, particularly in Western countries.
 
-### Linear Regression of Economic and Personal Freedom Difference By Region
-
-```{r linreg-region}
-linreg_reg <- hfi %>% 
-  filter(ef_score != "-" & pf_score != "-")
-m_hf_reg <- lm(as.numeric(ef_score) - as.numeric(pf_score) ~ region, data = linreg_reg)
-tidy(m_hf_reg) %>% 
-  arrange(estimate)
-```
-
-Equation: Difference Between Economic and Personal Freedom Score = 0.26 - 1.69(Western Europe) - 1.31(Eastern Europe) - 1.16(North America) - 1.04(Oceania) - 0.88(Latin America & the Caribbean) - 0.86(East Asia) - 0.44(Sub-Saharan Africa) - 0.01(South Asia) + 0.76(Middle East & North Africa)
-
-On average, we expect a country in the Caucasus & Central Asia region to have a difference of 0.26 between economic and personal freedom score. 
-
-On average, we expect a country in the Western Europe region to have a difference of -1.43 between economic and personal freedom score. 
-
-On average, we expect a country in the Eastern Europe region to have a difference of -1.05 between economic and personal freedom score. 
-
-On average, we expect a country in the North America region to have a difference of -0.9 between economic and personal freedom score. 
-
-On average, we expect a country in the Oceania region to have a difference of -0.78 between economic and personal freedom score. 
-
-On average, we expect a country in the Latin America & the Caribbean region to have a difference of -0.62 between economic and personal freedom score. 
-
-On average, we expect a country in the East Asia region to have a difference of -0.6 between economic and personal freedom score. 
-
-On average, we expect a country in the Sub-Saharan Africa region to have a difference of -0.18 between economic and personal freedom score. 
-
-On average, we expect a country in the South Asia region to have a difference of 0.25 between economic and personal freedom score. 
-
-On average, we expect a country in the Middle East & North Africa region to have a difference of 1.02 between economic and personal freedom score. 
-
-
 ### Correlation Between Economic and Personal Freedom
 
 ```{r corr-ef-pf}
