@@ -67,7 +67,7 @@ ggplot(data = hfscore_by_year,
   geom_line(stat = "identity") +
   ylim(6.75, 7.25) + 
   labs(x = "Year", y = "Human Freedom Score", 
-       title = "Overall Human Freedom on the Decline",
+       title = "Graph 1: Overall Human Freedom on the Decline",
        subtitle = "2008 to 2017")
 ```
 
@@ -88,7 +88,8 @@ freedom_map <- left_join(world_map, summarized_hfi, by = c("region" = "countries
 ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
   coord_fixed(1.3) +
   geom_polygon(aes(fill = as.numeric(mean_hf)), color = "white") +
-  scale_fill_distiller(palette ="RdBu", direction = 1)
+  scale_fill_distiller(palette ="RdBu", direction = 1) +
+  labs(title = "Graph 2: Average Freedom Around the World")
 
 #add labels
 ```
@@ -118,7 +119,7 @@ ggplot(data = clean_hfi, aes(x = diff_ef_pf)) +
   geom_vline(linetype = "dashed", xintercept = c(mean_diff$mean_diff)) +
   labs(x = "Difference in Economic and Personal Freedom Score", 
        y = "Count", 
-       title = "Histogram of Differences in Economic and Personal Freedom Score",
+       title = "Graph 3: Mean Difference in Economic and Personal Freedom Score < 0",
        subtitle = "Average Diffs from 2008 to 2017, 162 Countries")
 ```
 
@@ -207,7 +208,7 @@ ggplot(data = region_hfi, aes(x = reorder(region, diff_ef_pf),
   geom_col() + 
   theme(axis.text.x = element_text(angle = 30)) +
   labs(x = "Region", y = "Diff in EF and PF Scores", 
-       title = "Personal Freedom Lagging Behind 
+       title = "Graph 4: Personal Freedom Lagging Behind 
        Economic Freedom in Developing Countries",
        subtitle = "Data from 162 countries from 2008-2017")
 ```
@@ -261,7 +262,7 @@ ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score),
   geom_point(alpha = 0.5, position = "jitter") + 
   geom_smooth(method="lm") +
   labs(x = "Economic Freedom Score", y = "Personal Freedom Score", 
-       title = "Positive Correlation Between Economic and Personal Freedom",
+       title = "Graph 5: Positive Correlation Between Economic and Personal Freedom",
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
@@ -319,7 +320,8 @@ ggplot(data = ef_govt_coldwar,
        aes(x = as.factor(year), y = mean_ef_government, group = coldwar_side, color = coldwar_side)) +
   geom_line(stat = "identity") +
   labs(x = "Year", y = "Smaller Government", 
-       title = "Post-Soviet Countries Have Smaller Governments Than Western Countries",
+       title = "Graph 6: Post-Soviet Countries Have Smaller Governments 
+       Than Western Countries",
        subtitle = "2008 to 2017, Higher Score = Smaller Government") +
   theme(axis.line.y = element_line(arrow = arrow()))
 
@@ -333,7 +335,7 @@ ggplot(data = hf_coldwar,
        aes(x = as.factor(year), y = mean_hf, group = coldwar_side, color = coldwar_side)) +
   geom_line(stat = "identity") +
   labs(x = "Year", y = "Human Freedom Score", 
-       title = "Post-Soviet Countries Less Free Than Western Countries",
+       title = "Graph 7: Post-Soviet Countries Less Free Than Western Countries",
        subtitle = "2008 to 2017")
 ```
 
@@ -344,10 +346,14 @@ It appears that former Soviet countries' governments have been decreasing in siz
 ```{r linreg-coldwar-govt-size}
 coldwar_govtsize_reg <- hfi_coldwar %>% 
   filter(hf_score != "-")
+
 m_hf_reg <- lm(as.numeric(hf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
                data = coldwar_govtsize_reg)
+
 tidy(m_hf_reg) %>% 
   arrange(estimate) 
+
+glance(m_hf_reg)$r.squared
 ```
 
 Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
@@ -365,10 +371,14 @@ It appears that the effect of government size on human freedom score depends on 
 ```{r p-linreg-coldwar-govt-size}
 p_coldwar_govtsize_reg <- hfi_coldwar %>% 
   filter(pf_score != "-")
-m_hf_reg <- lm(as.numeric(pf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
+
+m_pf_reg <- lm(as.numeric(pf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
                data = p_coldwar_govtsize_reg)
-tidy(m_hf_reg) %>% 
+
+tidy(m_pf_reg) %>% 
   arrange(estimate) 
+
+glance(m_pf_reg)$r.squared
 ```
 
 Personal Freedom Score = 4.49 + 5.99(If Western) + 0.44(ef_government) - 0.72(ef_government * If Western)
@@ -383,10 +393,6 @@ For the average country on the Soviet side in the Cold War, their average person
 
 It appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
 
-Remaining Questions to Explore:
-- It appears that a bit of economic regulation could be beneficial toward a region's personal freedom and overall freedom. Examine certain lower scores in economic freedom in areas with high overall freedom.
-- Look at relationship between size of government and freedom
-- Look at relationship between regulation and overall freedom
 
 ### Women-Specific Freedoms
 
@@ -452,6 +458,7 @@ corr_ws_hf
 The correlation of women-specific freedom and overall freedom is 0.505, indicating that there is a moderate positive correlation between the two. 
 
 Visualizing correlation between women-specific and overall freedom.
+
 ```{r ws-hfi-scatter, warning=FALSE, message=FALSE}
 ggplot(data = ws_no_na, aes(x = ws_score, 
                              y = hfi_women_unweighted)) +
