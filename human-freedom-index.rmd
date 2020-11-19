@@ -19,7 +19,7 @@ hfi <- read_csv("data/hfi_cc_2019.csv")
 ```{r set-warning-message-echo}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
 ```
-### Introduction
+### INTRODUCTION
 
 Freedom is one of the most crucial concepts in the modern world, playing a large role in human progress and the dignity of individuals. Freedom is of great value to humanity as it can protect humans against natural disasters, social problems, and economic issues by expanding the set of human choices and offering constructive democratic relations in society (Jafarzadeh 323). Though freedom itself is a rather abstract term that can be difficult to quantify, it can be broken down into various measures encompassing personal, civic, and economic freedom. We are particularly interested in negative liberty, defined as freedom from interference by other people, or the absence of coercive constraint. Positive liberty, on the other hand, has vastly different meanings for different individuals and is more difficult to measure. Moreover, one individual’s conception of positive liberty can interfere with others’ negative liberty, so it is more worthwhile to measure the latter. 
 
@@ -27,13 +27,14 @@ Freedom is one of the most crucial concepts in the modern world, playing a large
 While freedom has always been an essential topic across the globe, it has been especially relevant in recent years, following an alarming rise in authoritarian regimes across the world and a continual struggle between power and liberty. As the world has become ever more globalized, we are beginning to see stark differences between the quality of life of individuals in countries with varying degrees of overall freedom. It appears that the general trajectory of modernization is not evenly distributed across different countries, and modernization itself does not always go hand in hand with greater freedom. As we continue to face ever-present issues of political tensions and uneven distribution of resources, along with emerging issues such as pandemics and the potential dangers of new technologies, freedom must be carefully observed and negotiated to promote the best possible outcome for societies.
 
 
-We wish to isolate the relationships between freedom and other social and economic phenomena, as well as understand the ways in which different facets of freedom interact with each other. In particular, we will examine whether social, economic, and personal liberties can stand alone or must necessarily hinge on each other. We are also interested in which attributes of freedom contribute the most to a country or region’s overall freedom, as well as which regions rank extremely in particular and overall freedom. Moreover, we would like to map the flux in global or regional freedom over the past few years and observe which particular freedoms have experienced the most significant change.
+We wish to isolate the relationships between freedom and other social and economic phenomena, as well as understand the ways in which different facets of freedom interact with each other. In particular, we will examine whether economic, and personal liberties can stand alone or must necessarily hinge on each other, and what their relationship is. We are also interested in the difference in overall and particular freedoms over time between Post-Soviet and Western/NATO countries, and how government size may affect freedom. Furthermore, we are interested in which attributes of freedom contribute the most to a country or region’s overall freedom, as well as which regions rank extremely in particular and overall freedom. Moreover, we would like to map the flux in global or regional freedom over the past few years.
 
 
-From prevailing research, we hypothesize that economic freedom is essential and positively correlated with all other freedoms and that it is a crucial component of overall freedom. We believe that higher scores on women-specific freedoms are positively correlated with all other freedoms and that personal freedom is positively correlated with political freedom. In accordance with the increase of authoritarian regimes around the globe, we hypothesize that overall freedom has decreased over the past few years, particularly political and personal liberties. We believe the US and China in particular have experienced a significant decrease in overall freedom in the wake of their recent strongman political regimes.
+From prevailing research, we hypothesize that economic freedom is essential and positively correlated with all other freedoms and that it is a crucial component of overall freedom. We believe that Post-Soviet countries are less free than NATO countries today, and that smaller government is correlated with greater overall and personal freedom. We also believe that higher scores on women-specific freedoms are positively correlated with all other freedoms and that personal freedom is positively correlated with political freedom. In accordance with the increase of authoritarian regimes around the globe, we hypothesize that overall freedom has decreased over the past few years.
 
 
-### Data Description
+
+### DATA DESCRIPTION
 
 The observations in this dataset follow 162 countries over several years, for a total of 1620 observations (162 countries, 10 years) and 120 variables. Countries were limited to those represented in the Economic Freedoms of the World report (Gwartney et al). Beginning in 2008, which was the first year enough data could be found to create a robust index, through 2017, 79 different indicators of personal and economic freedom were measured for the different countries. These specific indicators were used to give each country a freedom index, on a scale of 0 to 10, where 10 represents more freedom. The abstract term of freedom, in this context, was interpreted to be a “social concept that recognizes the dignity of individuals and is defined by the absence of coercive constraint.” 
 
@@ -43,20 +44,22 @@ The indicators fell into the following categories: rule of law, security and saf
 
 The data contributing to the numerical values for each of the indicators came from the following criteria: credible external sources, not generated by researchers doing the index analysis, transparent on methodology and sources, and covering as large a number of countries over as long a time period as possible. The 0-10 numerical values in each indicator already existed from other indices, such as the Global Peace Index, the Rule of Law Index, or the Economic Freedoms of the World Index (Gwartney et al). For countries not included in any given index, values were determined by regressing said index’s measures with other measures that data was obtainable for within that indicator. For example, countries not in the Rule of Law Index were regressed with rule of law measures from the World Bank’s Worldwide Governance Indicators. 
 
-### Glimpse of Data
+### GLIMPSE OF DATA
 
 ```{r glimpse}
 glimpse(hfi)
 ```
 
 
-### Methodology
+### METHODOLOGY
 
-### Question 1
+### Overall Human Freedom
 
-How has overall freedom around the world changed over time?
+### Visualizations
 
-```{r q1, warning=FALSE, message=FALSE}
+To visualize the change in human freedom over the years, we plotted the year, as a factor, against our calculation of the mean human freedom score per year on a line graph. To visualize the average human freedom score for each country over the years, we calculated a mean human freedom score for each country and plotted the scores over a world map. 
+
+```{r overall, warning=FALSE, message=FALSE}
 hfscore_by_year <- hfi %>% 
   filter(hf_score != "-") %>% 
   group_by(year) %>% 
@@ -71,7 +74,6 @@ ggplot(data = hfscore_by_year,
        subtitle = "2008 to 2017")
 ```
 
-### Average Freedom Around the World
 ```{r freedom-map}
 summarized_hfi <- hfi %>% 
   filter(hf_score != "-") %>% 
@@ -94,10 +96,12 @@ ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
 #add labels
 ```
 
-### ===========================================================================
-### Economic and Personal Freedom
+As seen in graph 1, overall freedom has been on a decline from 2008 to 2017 (dropping from an average of ~7.1 to ~6.9), in accordance with our initial hypothesis. Graph 2 shows us that developed countries, particularly those in North America, Western Europe, and Oceania had higher overall freedom scores across the board (> 7), shown in dark blue. Meanwhile, developing countries in Africa had significantly lower overall freedom scores across the board (< 6), shown in dark red. Countries in South America, Eastern Europe, and Asia fell somewhere near the middle (6-7), shown in light blue or light red. 
 
-How do different countries' economic and personal freedom scores compare?
+### Relationship Between Economic Freedom and Personal Freedom
+
+Initial visualization of difference between economic and personal freedom
+We did some exploratory data analysis to examine the difference in economic freedom and personal freedom scores across different countries. We calculated the mean economic freedom score and mean personal freedom score across the years for each country, and took their difference. We plotted these differences on a histogram.
 
 ```{r economic-and-personal-freedom}
 no_na_hfi <- hfi %>% 
@@ -123,17 +127,15 @@ ggplot(data = clean_hfi, aes(x = diff_ef_pf)) +
        subtitle = "Average Diffs from 2008 to 2017, 162 Countries")
 ```
 
-### Economic and Personal Freedom Differences - Bootstrap Simulation
+As seen in graph 3, the mean difference in economic freedom score and personal freedom score appears to be less than 0, which differs from our initial belief that an increase in economic freedom would always indicate an increase in personal freedom.
 
-On average, is there a difference between a country's economic freedom score and personal freedom score?
+### Bootstrap simulation based testing
 
-Null Hypothesis: the difference between mean economic freedom score and mean personal freedom score is greater than or equal to zero.
+Next, we assessed whether the difference in economic freedom score and personal freedom score was statistically significant using a bootstrap simulation test. We performed 500 bootstrap simulations on a variable we created to describe the mean difference in economic and personal freedom score over the years for a particular country. We conducted our test at the $\alpha$ = 0.05 significance level, which tests the two hypotheses below:
 
-Alternative Hypothesis: the difference between mean economic freedom score and mean personal freedom score is less than zero.
+$H_0$: the difference between mean economic freedom score and mean personal freedom score is greater than or equal to zero.
 
-$H_0$: $\mu$ $\geq$ 0
-
-$H_A$: $\mu$ < 0
+$H_A$: the difference between mean economic freedom score and mean personal freedom score is less than zero.
 
 ```{r bootstrap-ef-pf-95-conf}
 set.seed(10)
@@ -188,9 +190,9 @@ ggplot(data = boot_means, aes(x = shifted_means)) +
   geom_vline(linetype = "dashed", xintercept = c(mean_diff$mean_diff))
 ```
 
-Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
+### Visualization of economic and personal freedom difference by region
 
-### Economic and Personal Freedom Difference By Region
+Given the significant p-value of our bootstrap test statistic, and our visualization of average human freedom score on a world map, we visualized the difference in economic and personal freedom score by region. We calculated the difference for each region, sorted the differences from lowest to highest, and graphed them on a bar chart. 
 
 ```{r region-economic-personal-diff, warning=FALSE, message=FALSE}
 region_hfi <- no_na_hfi %>% 
@@ -213,9 +215,11 @@ ggplot(data = region_hfi, aes(x = reorder(region, diff_ef_pf),
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
-From our graph, it appears that economic freedom is significantly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom appears to be much higher than economic freedom in developed countries, particularly in Western countries.
+As seen in graph 4, it appears that economic freedom is slightly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom scores appear to be significantly higher than economic freedom scores in developed countries, particularly in Western Europe (and in Western countries overall).
 
-### Correlation Between Economic and Personal Freedom
+### Pearson correlation coefficient and visualization of relationship between economic and personal freedom
+
+While it seemed that economic freedom was generally lower than personal freedom in developed countries, and generally higher than personal freedom in developing countries, we were curious whether there was a correlation between economic and personal freedom scores. We calculated the Pearson correlation coefficient between ef_score and pf_score and graphed ef_score against pf_score for all of our observations in a scatterplot.
 
 ```{r corr-ef-pf}
 corr_efpf <- no_na_hfi %>% 
@@ -233,13 +237,13 @@ ggplot(data = no_na_hfi, aes(x = as.numeric(ef_score),
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
-It appears that there is a positive and linear relationship between economic freedom score and personal freedom score.
+It appears that there is a moderate to strong positive correlation between economic freedom score and personal freedom score. It also appears that there is a greater upper bound to personal freedom score compared to economic freedom score.
 
-* It appears that there is a lower limit to economic freedom, compared to personal freedom.
+### Relationship Between Cold War Status and Freedom
 
-### Relationship Between Freedom and Cold War Status
+### Visualizations
 
-Mean Government Size From 2008-2017, Post-Soviet and NATO Countries
+We decided to examine the difference in overall freedom between Post-Soviet and NATO countries, as well as their difference in mean government size. To visualize the difference in mean government size over the years between Post-Soviet and NATO countries, we first selected the main countries that were involved in the Cold War, and divided them into Post-Soviet and NATO countries. Our Post-Soviet group included Russia, Ukraine, Moldova, Uzbekistan, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan, Georgia, Azerbaijan, Armenia, Lithuania, Latvia, and Estonia. Our NATO/Western group included Belgium, Canada, Denmark, France, Germany, Greece, Iceland, Italy, Luxembourg, The Netherlands, Norway, Portugal, Spain, Turkey, The United Kingdom, and The United States. We first calculated the mean government size (using the ef_government variable, where a higher score indicates a smaller government and decreased government control) for each group per year and graphed this over a line graph. We then calculated the mean human freedom score for each group per year and graphed this over a line graph.
 
 ```{r coldwar, warning=FALSE, message=FALSE}
 hfi_coldwar <- hfi %>% 
@@ -306,22 +310,29 @@ ggplot(data = hf_coldwar,
        subtitle = "2008 to 2017")
 ```
 
-It appears that former Soviet countries' governments have been decreasing in size, while Western countries' governments have been increasing in size. Smaller government doesn't necessarily lead to more freedom.
+As seen in graphs 6 and 7, it appears that former Soviet countries’ governments have been decreasing in size, while Western countries’ governments have been increasing in size. Moreover, Post-Soviet countries appear to have smaller governments on average compared to Western countries, with about a difference of 1 point in ef_government. It appears that smaller government does not necessarily lead to greater overall human freedom, which differs from our initial hypothesis.
 
-- ****Linear Regression
+### Linear regression of Cold War status and government size, in relation to overall freedom
 
-```{r linreg-coldwar-govt-size}
-coldwar_govtsize_reg <- hfi_coldwar %>% 
-  filter(hf_score != "-")
+In order to parse out a clearer relationship between Cold War status and government size, and overall freedom score, we performed a linear regression of Cold War side, government size (ef_government), and their interaction, on overall freedom score. 
 
-m_hf_reg <- lm(as.numeric(hf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
-               data = coldwar_govtsize_reg)
+### Linear regression of Cold War status and government size, in relation to personal freedom
 
-tidy(m_hf_reg) %>% 
-  arrange(estimate) 
+In order to parse out a clearer relationship between Cold War status and government size, and personal freedom score, we performed a linear regression of Cold War side, government size (ef_government), and their interaction, on personal freedom score. 
 
-glance(m_hf_reg)$r.squared
-```
+
+### RESULTS
+
+### Relationship Between Economic Freedom and Personal Freedom
+
+### Bootstrap simulation based testing
+
+Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
+
+### Relationship Between Cold War Status and Freedom
+
+Linear regression of Cold War status and government size, in relation to overall freedom
+Our fitted linear regression model on the relationship between Cold War status and government size, and overall human freedom, is as follows:
 
 Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
 
@@ -329,24 +340,23 @@ Human Freedom Score for Western Countries: 8.84 - 0.11(ef_government)
 
 Human Freedom Score for Post-Soviet Countries: 4.26 + 0.44(ef_government) 
 
-For the average country on the Western side in the Cold War, their average human freedom score in the past decade has been 8.84 at an ef_government score of 0 (large government), and it is 0.11 points lower for every additional point in the ef_government score (smaller government).
+For the average country on the Western side in the Cold War, their average human freedom score in the past decade has been 8.84 at an ef_government score of 0 (large government), and all else held constant, it is 0.11 points lower for every additional point in the ef_government score (smaller government).
 
-For the average country on the Soviet side in the Cold War, their average human freedom score in the past decade has been 4.26 at an ef_government score of 0 (large government), and it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+For the average country on the Soviet side in the Cold War, their average human freedom score in the past decade has been 4.26 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
 
-It appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
+$H_0$: $\beta_0$ = 0
 
-```{r p-linreg-coldwar-govt-size}
-p_coldwar_govtsize_reg <- hfi_coldwar %>% 
-  filter(pf_score != "-")
+$H_A$: $\beta_1$ $\neq$ 0
 
-m_pf_reg <- lm(as.numeric(pf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
-               data = p_coldwar_govtsize_reg)
+Our results are statistically significant, and the relationship between government size and overall human freedom does depend on a country’s Cold War status. Our test statistic is -6.67. The p-value (1.48e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and overall human freedom depending on a country’s Cold War status.
 
-tidy(m_pf_reg) %>% 
-  arrange(estimate) 
+In our particular case, it appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
 
-glance(m_pf_reg)$r.squared
-```
+In terms of the effectiveness of our model, we obtain R^2 = 0.49. In the context of the problem, 0.49 of the variability in the response variable (overall human freedom) is explained by the model.
+
+### Linear regression of Cold War status and government size, in relation to personal freedom
+
+Our fitted linear regression model on the relationship between Cold War status and government size, and personal freedom, is as follows:
 
 Personal Freedom Score = 4.49 + 5.99(If Western) + 0.44(ef_government) - 0.72(ef_government * If Western)
 
@@ -354,11 +364,20 @@ Personal Freedom Score for Western Countries: 10.48 - 0.28(ef_government)
 
 Personal Freedom Score for Post-Soviet Countries: 4.49 + 0.44(ef_government) 
 
-For the average country on the Western side in the Cold War, their average personal freedom score in the past decade has been 10.48 at an ef_government score of 0 (large government), and it is 0.28 points lower for every additional point in the ef_government score (smaller government).
+For the average country on the Western side in the Cold War, their average personal freedom score in the past decade has been 10.48 at an ef_government score of 0 (large government), and all else held constant, it is 0.28 points lower for every additional point in the ef_government score (smaller government).
 
-For the average country on the Soviet side in the Cold War, their average personal freedom score in the past decade has been 4.49 at an ef_government score of 0 (large government), and it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+For the average country on the Soviet side in the Cold War, their average personal freedom score in the past decade has been 4.49 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
 
-It appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
+$H_0$: $\beta_0$ = 0
+
+$H_A$: $\beta_1$ $\neq$ 0
+
+Our results are statistically significant, and the relationship between government size and personal freedom does depend on a country’s Cold War status. Our test statistic is -6.41. The p-value (6.53e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and personal freedom depending on a country’s Cold War status.
+
+In our particular case, it appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
+
+In terms of the effectiveness of our model, we obtain R^2 = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
+
 
 
 ### Women-Specific Freedoms
