@@ -27,7 +27,7 @@ Freedom is one of the most crucial concepts in the modern world, playing a large
 While freedom has always been an essential topic across the globe, it has been especially relevant in recent years, following an alarming rise in authoritarian regimes across the world and a continual struggle between power and liberty. As the world has become ever more globalized, we are beginning to see stark differences between the quality of life of individuals in countries with varying degrees of overall freedom. It appears that the general trajectory of modernization is not evenly distributed across different countries, and modernization itself does not always go hand in hand with greater freedom. As we continue to face ever-present issues of political tensions and uneven distribution of resources, along with emerging issues such as pandemics and the potential dangers of new technologies, freedom must be carefully observed and negotiated to promote the best possible outcome for societies.
 
 
-We wish to isolate the relationships between freedom and other social and economic phenomena, as well as understand the ways in which different facets of freedom interact with each other. In particular, we will examine whether economic, and personal liberties can stand alone or must necessarily hinge on each other, and what their relationship is. We are also interested in the difference in overall and particular freedoms over time between Post-Soviet and Western/NATO countries, and how government size may affect freedom. Furthermore, we are interested in which attributes of freedom contribute the most to a country or region’s overall freedom, as well as which regions rank extremely in particular and overall freedom. Moreover, we would like to map the flux in global or regional freedom over the past few years.
+We wish to isolate the relationships between freedom and other social and economic phenomena, as well as understand the ways in which different facets of freedom interact with each other. In particular, we will examine whether economic, and personal liberties can stand alone or must necessarily hinge on each other, and what their relationship is. We are also interested in the difference in overall and particular freedoms over time between Post-Soviet and Western/NATO countries, and how government size may affect freedom. Furthermore, we are interested in which attributes of freedom contribute the most to a country or region’s overall freedom, as well as which regions rank extremely in particular and overall freedom. Moreover, we would like to map the flux in global or regional freedom over the past few years. As such an appropriate research question is: What are the relationships between freedom and other social and economic factors and how do different facets of freedom interact with each other?
 
 
 From prevailing research, we hypothesize that economic freedom is essential and positively correlated with all other freedoms and that it is a crucial component of overall freedom. We believe that Post-Soviet countries are less free than NATO countries today, and that smaller government is correlated with greater overall and personal freedom. We also believe that higher scores on women-specific freedoms are positively correlated with all other freedoms and that personal freedom is positively correlated with political freedom. In accordance with the increase of authoritarian regimes around the globe, we hypothesize that overall freedom has decreased over the past few years.
@@ -460,7 +460,7 @@ corr_ws_hf
 A correlation coefficient of 0.505 told us that there is a moderate, linear, positive correlation between the two variables. This means that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
  
 ### W-S freedom to personal vs economic freedom 
-Through our bootstrapping earlier (see graph 3 and subsequent simulation based testing), we saw that the mean difference between economic and personal freedom was less 0. We wanted to explore the correlations between women-specific freedom and economic freedom, and women-specific freedom and (women-unweighted) personal freedoms, specifically on the difference between the two. Our initial hypothesis was that women-specific freedom would not have the same correlation with economic freedom and personal freedom, since indicators in the personal freedom category were more directly linked to allowing behaviour or specific freedoms to be lived out while economic freedom is more related to the acquisition and exchange of property and capital by individuals. 
+Through our bootstrapping earlier (see graph 3 and subsequent simulation based testing), we saw that the mean difference between economic and personal freedom was less 0. We wanted to explore the correlations between women-specific freedom and economic freedom, and women-specific freedom and (women-unweighted) personal freedoms, specifically on the difference between the two. Our initial hypothesis was that women-specific freedom would not have the same correlation with economic freedom and personal freedom, since indicators in the personal freedom category were more directly linked to allowing behavior or specific freedoms to be lived out while economic freedom is more related to the acquisition and exchange of property and capital by individuals. 
 
 We first did initial visualizations and calculated the correlation of women-specific freedoms, with economic and personal freedom, respectively, removing observations with null values. 
 
@@ -544,7 +544,8 @@ boot_2
 ```
 Our initial 99% confidence interval for the hypothesis is -0.12 to 0.12, which does not include the observed value. This means that if we were to reconduct this study over and over, we would expect 99% of those intervals to contain the true difference in correlation, IF the null hypothesis were true. Since our observed value is outside that range, it begins to lead us to conclude to reject the null hypothesis, but we will visualized the distribution and caluated the p-value to make sure. 
 
-```{r bootstrap-ws-ef-pf-visualization-and-pval}
+```{r bootstrap-ws-ef-pf-visualization-and-pval, message=FALSE}
+set.seed(10)
 ggplot(data = boot_cors, aes(x = shifted_cors)) +
   geom_histogram(color = "darkblue", fill = "skyblue") + 
   labs(x = "Voice Jitter", 
@@ -665,27 +666,22 @@ When considering countries that have fewer rights for women, it is also interest
 With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. When looking at why sub-saharan africa does not follow this trend, and has a lower women-specific freedom score than expected, we identified that, although there are a wide variety of religions and practices people follow, women in sub-saharan Africa face significant sexual discrimination and abuse, intimate violence, political marginalization, and economic deprivation[4]. 
 
 _Limitations_
--Measured, not randomly sampled
--Connections in real world
--We did analysis but there are a lot of confounding variables
+
+In our analysis of the Human Freedom Index dataset, there are clear limitations that need to be recognized. One such limitation is that the data is not randomly selected and does not contain the randomness that is typically desired from a dataset. Another limitation is that though analysis was performed, it was done so in a manner that assumed the individual countries to be independent and not have regional factors that affected each others scores in one or more categories. This presence of confounding variables somewhat decreases the validity of the analysis since it is easy to recognize that regional conflicts would affect certain freedom scores rather than solely the policies or type of government present in a given country. 
 
 _Future Directions_
-1. Continue to track specific gains and losses of freedom. 
-2. Continue to identify and explain what links may exist among the assortment of freedoms and other variables
-3. Explore the different relationships between freedoms at different levels of development
-4. Determine if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms
 
-_Citations_
-1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets
-2. https://ips-dc.org/women_in_the_middle_east/
-3. https://www.wilsoncenter.org/article/us-report-religious-freedom-middle-east-and-north-africa
+If this project were to continue in the future there are a few key areas that would require further attention. First, it is necessary to continue tracking changes in freedom over time. Likewise, it is critical that further possible relationships be identified and explored among the assortment of freedoms and other variables. Another key area relates to exploring the different relationshops between freedom levels at different levels of development. Lastly, it would be greatly beneficial to determine if certain types of freedom (economic or social) are more likely to enable or allow other freedoms to emerge or be sustained. 
+
+_Citations_  
+1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets  
+2. https://ips-dc.org/women_in_the_middle_east/  
+3. https://www.wilsoncenter.org/article/us-report-religious-freedom-middle-east-and-north-africa  
 4. https://www.du.edu/korbel/hrhw/researchdigest/africa/WomensRights.pdf
 
 
-
 ###NEED TO DO
--limitations section 
--future directions (where could we go deeper)
 -finish presentation 
--linear regression stuff?
-- general research question in introduction (see ppt ques. slide 5)
+-other things that I might be missing.
+- look over the rmd (perform edits)
+- 
