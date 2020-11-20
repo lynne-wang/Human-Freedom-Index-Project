@@ -92,8 +92,6 @@ ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
   geom_polygon(aes(fill = as.numeric(mean_hf)), color = "white") +
   scale_fill_distiller(palette ="RdBu", direction = 1) +
   labs(title = "Graph 2: Average Freedom Around the World")
-
-#add labels
 ```
 
 As seen in graph 1, overall freedom has been on a decline from 2008 to 2017 (dropping from an average of ~7.1 to ~6.9), in accordance with our initial hypothesis. Graph 2 shows us that developed countries, particularly those in North America, Western Europe, and Oceania had higher overall freedom scores across the board (> 7), shown in dark blue. Meanwhile, developing countries in Africa had significantly lower overall freedom scores across the board (< 6), shown in dark red. Countries in South America, Eastern Europe, and Asia fell somewhere near the middle (6-7), shown in light blue or light red. 
@@ -382,6 +380,8 @@ In terms of the effectiveness of our model, we obtain R^2 = 0.51. In the context
 
 ### Women-Specific Freedoms
 
+In order to remove the effects of women-specific freedom scores from a country’s overall human freedom index, we created new variables for each main freedom subcategory, as well as overall human freedom that did not include women-specific freedoms. We also created a variable that represented overall women-specific freedom score, with the same weight given to each category as in the overall freedom index. Any correlation found between women-specific freedom score and overall freedom score should not be influenced by women’s freedom categories that contribute to the overall. 
+
 ```{r unweighting-wsf, warning=FALSE, message=FALSE}
 hfi <- hfi%>%
   mutate(pf_movement_nowomen = (as.numeric(pf_movement_domestic) 
@@ -415,11 +415,7 @@ hfi <- hfi%>%
          + (pf_expression * 0.1)
          + (pf_association * 0.1)
          + (pf_religion * 0.1))
-```
-Women-specific freedoms were unweighted from overall freedom to remove any affect on the correlation. 
 
-What is the correlation between women-specific freedom and overall freedom? 
-```{r correlation-women-vs-overall, warning=FALSE, message=FALSE}
 ws_only <- hfi%>%
   select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
          pf_ss_women_inheritance_daughters, pf_ss_women_inheritance_widows,
@@ -432,19 +428,16 @@ ws_only <- ws_only%>%
   mutate(pf_identity_sex_female = as.numeric(pf_identity_sex_female))%>%
 
   mutate(ws_score = (((pf_identity_divorce + pf_identity_sex_female)/2) + pf_ss_women + pf_movement_women)/3)
+```
 
+### Correlating Women-Specific Freedom to Overall Freedom
+
+Now that the contribution of women-specific (W-S) freedoms should have no effect on the correlation with overall freedom, we did some initial visualization of countries' W-S score with their overall human freedom score. There appeared to be an overall linear positive correlation, with a few outliers that had high W-S freedom scores, but relatively low overall freedom scores. 
+
+```{r ws-hfi-scatter, warning=FALSE, message=FALSE}
 ws_no_na <- ws_only%>%
     filter(!is.na(hfi_women_unweighted) & !is.na(ws_score)) 
 
-corr_ws_hf <- ws_no_na%>%
-  summarize(cor_ws_hfi = cor(ws_score, hfi_women_unweighted))
-corr_ws_hf
-```
-The correlation of women-specific freedom and overall freedom is 0.505, indicating that there is a moderate positive correlation between the two. 
-
-Visualizing correlation between women-specific and overall freedom.
-
-```{r ws-hfi-scatter, warning=FALSE, message=FALSE}
 ggplot(data = ws_no_na, aes(x = ws_score, 
                              y = hfi_women_unweighted)) +
   geom_point(alpha = 0.5, position = "jitter") + 
@@ -455,10 +448,19 @@ ggplot(data = ws_no_na, aes(x = ws_score,
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
-
-It appears that there is a somewhat linear positive correlation between overall freedom score, and women-specific freedom score, with a few outliers. 
-
+After seeing that there was a general positive trend, we calculated the correlation coefficient of W-S score and the unweighted human freedom index.
+```{r correlation-women-vs-overall, warning=FALSE, message=FALSE}
+corr_ws_hf <- ws_no_na%>%
+  summarize(cor_ws_hfi = cor(ws_score, hfi_women_unweighted))
+corr_ws_hf
+```
+A correlation coefficient of 0.505 told us that there is a moderate, linear, positive correlation between the two variables. This means that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
+ 
 ### W-S freedom to personal vs economic freedom 
+Through our bootstrapping earlier (see graph 3 and subsequent simulation based testing), we saw that the mean difference between economic and personal freedom was less 0. We wanted to explore the correlations between women-specific freedom and economic freedom, and women-specific freedom and (women-unweighted) personal freedoms, specifically on the difference between the two. Our initial hypothesis was that women-specific freedom would not have the same correlation with economic freedom and personal freedom, since indicators in the personal freedom category were more directly linked to allowing behaviour or specific freedoms to be lived out while economic freedom is more related to the acquisition and exchange of property and capital by individuals. 
+
+We first did initial visualizations and calculated the correlation of women-specific freedoms, with economic and personal freedom, respectively, removing observations with null values. 
+
 ```{r ws-ef-scatter-and-corr, warning=FALSE, message=FALSE}
 ws_no_na <- ws_no_na%>%
   filter(!is.na(ef_score) & !is.na(pf_score_nowomen))
@@ -467,36 +469,46 @@ ggplot(data = ws_no_na, aes(x = ws_score,
   geom_point(alpha = 0.5, position = "jitter") + 
   geom_smooth(method="lm") +
   labs(x = "Women-Specific Freedoms Score", y = "Economic Freedom Score", 
-       title = "Positive Correlation Between Women-Specific and Economic Freedom",
-       subtitle = "Data from 162 countries from 2008-2017")
+       title = "Graph 9a: Positive Correlation Between Women-Specific and 
+       Economic Freedom",
+       subtitle = "Correlation less strong than overall HFI")
 
 corr_ws_ef <- ws_no_na%>%
   summarize(cor_ws_hfi = cor(ws_score, ef_score))
 corr_ws_ef
 ```
+Women-specific and economic freedom had an observed correlation coefficient of 0.32. This weak-to-moderate positive linear correlation is less strong than the correlation between women-specific freedom and overall freedom, but still means that countries with higher economic freedom typically also have higher W-S freedom. There are a few outliers, like before, that had high W-S freedom but low economic freedom. 
 
 ```{r ws-pf-scatter-and-corr, warning=FALSE, message=FALSE}
 ggplot(data = ws_no_na, aes(x = ws_score, 
                              y = pf_score_nowomen)) +
   geom_point(alpha = 0.5, position = "jitter") + 
   geom_smooth(method="lm") +
-  labs(x = "Women-Specific Freedoms Score", y = "Economic Freedom Score", 
-       title = "Positive Correlation Between Women-Specific and Economic Freedom",
-       subtitle = "Data from 162 countries from 2008-2017")
+  labs(x = "Women-Specific Freedoms Score", y = "Personal Freedom Score", 
+       title = "Graph 9b: Positive Correlation Between Women-Specific and 
+       Personal Freedom")
 
 corr_ws_pf <- ws_no_na%>%
   summarize(cor_ws_hfi = cor(ws_score, pf_score_nowomen))
 corr_ws_pf
 ```
+Women-specific and personal freedom had an observed correlation coefficient of 0.56. This moderate positive linear correlation was quite similar to the correlation between women-specific freedom and overall freedom, indicating that countries with higher personal freedom typically also have higher W-S freedom. There are no obvious outliers, but a fairly large range of economic freedom scores that correspond to high women-specific freedom score, indicating that countries could have high or low economic freedom, but still have high women-specific freedom. 
+
 ```{r ws-ef-pf-obs-diff-in-corr}
 obs_diff_corr <- ws_no_na%>%
   summarize(obs_diff_corr = (cor(ws_score, pf_score_nowomen) - cor(ws_score, ef_score)))
 obs_diff_corr
 ```
-hypoth test that the observed difference in correlations is nonzero 
+We calculated the observed difference between correlation coefficients of the above two visualizations (women-specific vs economic freedom and women-specific vs personal freedom) to be 0.24. On a scale of -1 to 1, this was a large enough difference that we wanted to test if we could truly say the correlations were different. 
+
+### Bootstrap simulation difference in correlations
+
+We performed 2000 bootstrap simulations on a variable we created to describe the difference in correlations between women-specific (w-s) freedom to economic and personal freedom score. We conducted our test at the $\alpha$ = 0.01 significance level, which tests the two hypotheses below:
 
 
-
+Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+Significance level: $\alpha$ = 0.01
 ```{r ws-personal-economic-hyptohesis}
 set.seed(10)
 n_sims <- 2000
@@ -524,22 +536,20 @@ boot_2 <- boot_cors%>%
   summarize(lower = quantile(shifted_cors, 0.005), 
             upper = quantile(shifted_cors, 0.995))
 boot_2
-
-boot_og <- boot_cors%>%
-  summarize(lower = quantile(boot_distribution, 0.005), 
-            upper = quantile(boot_distribution, 0.995))
-boot_og
 ```
+Our initial 99% confidence interval for the hypothesis is -0.12 to 0.12, which does not include the observed value. This means that if we were to reconduct this study over and over, we would expect 99% of those intervals to contain the true difference in correlation, IF the null hypothesis were true. Since our observed value is outside that range, it begins to lead us to conclude to reject the null hypothesis, but we will visualized the distribution and caluated the p-value to make sure. 
 
-
-```{r bootstrap-ws-ef-pf-val}
-
+```{r bootstrap-ws-ef-pf-visualization-and-pval}
 ggplot(data = boot_cors, aes(x = shifted_cors)) +
   geom_histogram(color = "darkblue", fill = "skyblue") + 
   labs(x = "Voice Jitter", 
-       title = "Bootstrap Distribution of Difference in Correlations Centered at 0 appears Normal") +
+       title = 
+       "Bootstrap Distribution of Difference in Correlations Centered at 0 
+       appears Normal", 
+       subtitle = "Observed value outside of 99% confidence interval") +
   geom_vline(xintercept = c(boot_2$lower, boot_2$upper),
-             color = "red")
+             color = "red") +
+  geom_vline(linetype = "dashed", xintercept = c(obs_diff_corr$obs_diff_corr))
 
 
 boot_cors %>% 
@@ -548,10 +558,13 @@ boot_cors %>%
   summarize(p_val2 = mean(extreme2))
 
 ```
-Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+The distribution appears normal, and our observed statistic is well outside of the confidence interval. 
 
-Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. This means we rejected the null hypothesis, and found sufficient evidence to suggest that the difference in correlations between W-S freedom to personal freedom and W-S freedom to economic freedom was not zero. 
 
+### Women-Specific Freedoms and Religious Freedom 
+
+Heavy control by governing bodies on religion and women are often related, anecdotally, so we explored this a bit. First we visualized the average personal freedom category of religion for each region. The regions are colored by their mean women-specific freedom score.
 ```{r ws-religion-visualization, message=FALSE}
 region_ws <- ws_no_na %>% 
   group_by(region) %>% 
@@ -567,11 +580,20 @@ ggplot(data = region_ws, aes(x = reorder(region, mean_pf_religion),
                               y = mean_pf_religion, fill = mean_ws)) +
   scale_fill_gradient(low = "red", high = "blue", na.value = NA) +
   geom_col() + 
-  theme(axis.text.x = element_text(angle = 30)) +
+  theme(axis.text.x = element_text(angle = 20)) +
   labs(x = "Region", y = "Average Religion Freedom Score", 
-       title = "Graph 4: Title")
-
+       title = "Graph 10: General increase in mean W-S score with higher
+       religious freedom score",
+       subtitle = "Sub-Saharan Africa does not fit trend",
+       fill = "Mean W-S freedom score")
 ```
+There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. Middle East and North Africa, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
+
+
+### Chi-Squared Test for Independence
+
+In order to determine if above average women-specific freedom score and above average religious freedom score are associated, we performed a Chi-Squared test at the $\alpha$ = 0.05 significance level. Our null hypothesis is that there is no relationship between whether a country's women-specific freedom score is above or below average and whether their religious freedom score is above or below average. Our alternative hypothesis is that there is a relationship between the two, and the variables are not independent. We calculated the average freedom scores for each category and created a new variable for each that listed if the observation was above or below average for each criteria. 
+
 ```{r ws-religion-chisq}
 mean_ws <- ws_no_na%>%
   summarize(mean_ws = mean(ws_score))
@@ -581,18 +603,17 @@ mean_rel <- hfi%>%
   summarize(mean_rel = mean(pf_religion))
 
 ws_no_na<-ws_no_na%>%
-  mutate(religion_avg = ifelse(pf_religion > 7.834794, 
+  mutate(religion_avg = ifelse(pf_religion >= 7.834794, 
                         "Above Average", "Below Average"))
 ws_no_na<-ws_no_na%>%
-  mutate(ws_average = ifelse(ws_score > 8.942593, 
+  mutate(ws_average = ifelse(ws_score >= 8.942593, 
                         "Above Average", "Below Average"))
 
 chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
 ```
-If the null hypothesis is true, 
+Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
-
-### Results
+### Results Summary
 
 ### Discussion
 
