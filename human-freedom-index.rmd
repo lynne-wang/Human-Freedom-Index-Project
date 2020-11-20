@@ -322,64 +322,6 @@ In order to parse out a clearer relationship between Cold War status and governm
 
 In order to parse out a clearer relationship between Cold War status and government size, and personal freedom score, we performed a linear regression of Cold War side, government size (ef_government), and their interaction, on personal freedom score. 
 
-
-### RESULTS
-
-### Bootstrap simulation based testing
-
-Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
-
-### Relationship Between Cold War Status and Freedom
-
-Linear regression of Cold War status and government size, in relation to overall freedom
-Our fitted linear regression model on the relationship between Cold War status and government size, and overall human freedom, is as follows:
-
-Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
-
-Human Freedom Score for Western Countries: 8.84 - 0.11(ef_government)
-
-Human Freedom Score for Post-Soviet Countries: 4.26 + 0.44(ef_government) 
-
-For the average country on the Western side in the Cold War, their average human freedom score in the past decade has been 8.84 at an ef_government score of 0 (large government), and all else held constant, it is 0.11 points lower for every additional point in the ef_government score (smaller government).
-
-For the average country on the Soviet side in the Cold War, their average human freedom score in the past decade has been 4.26 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
-
-$H_0$: $\beta_0$ = 0
-
-$H_A$: $\beta_1$ $\neq$ 0
-
-Our results are statistically significant, and the relationship between government size and overall human freedom does depend on a country’s Cold War status. Our test statistic is -6.67. The p-value (1.48e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and overall human freedom depending on a country’s Cold War status.
-
-In our particular case, it appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
-
-In terms of the effectiveness of our model, we obtain R^2 = 0.49. In the context of the problem, 0.49 of the variability in the response variable (overall human freedom) is explained by the model.
-
-### Linear regression of Cold War status and government size, in relation to personal freedom
-
-Our fitted linear regression model on the relationship between Cold War status and government size, and personal freedom, is as follows:
-
-Personal Freedom Score = 4.49 + 5.99(If Western) + 0.44(ef_government) - 0.72(ef_government * If Western)
-
-Personal Freedom Score for Western Countries: 10.48 - 0.28(ef_government)
-
-Personal Freedom Score for Post-Soviet Countries: 4.49 + 0.44(ef_government) 
-
-For the average country on the Western side in the Cold War, their average personal freedom score in the past decade has been 10.48 at an ef_government score of 0 (large government), and all else held constant, it is 0.28 points lower for every additional point in the ef_government score (smaller government).
-
-For the average country on the Soviet side in the Cold War, their average personal freedom score in the past decade has been 4.49 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
-
-$H_0$: $\beta_0$ = 0
-
-$H_A$: $\beta_1$ $\neq$ 0
-
-Our results are statistically significant, and the relationship between government size and personal freedom does depend on a country’s Cold War status. Our test statistic is -6.41. The p-value (6.53e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and personal freedom depending on a country’s Cold War status.
-
-In our particular case, it appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
-
-In terms of the effectiveness of our model, we obtain R^2 = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
-
-
-
 ### Women-Specific Freedoms
 
 In order to remove the effects of women-specific freedom scores from a country’s overall human freedom index, we created new variables for each main freedom subcategory, as well as overall human freedom that did not include women-specific freedoms. We also created a variable that represented overall women-specific freedom score, with the same weight given to each category as in the overall freedom index. Any correlation found between women-specific freedom score and overall freedom score should not be influenced by women’s freedom categories that contribute to the overall. 
@@ -620,6 +562,90 @@ ws_no_na<-ws_no_na%>%
 chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
 ```
 Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
+
+
+### RESULTS
+
+### Bootstrap simulation based testing
+
+Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 significance level. There is sufficient evidence to suggest that the difference between mean economic freedom score and mean personal freedom score is less than zero. In other words, on average, economic freedom scores tend to be lower than personal freedom scores around the world.
+
+### Relationship Between Cold War Status and Freedom
+
+Linear regression of Cold War status and government size, in relation to overall freedom
+Our fitted linear regression model on the relationship between Cold War status and government size, and overall human freedom, is as follows:
+
+Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
+
+Human Freedom Score for Western Countries: 8.84 - 0.11(ef_government)
+
+Human Freedom Score for Post-Soviet Countries: 4.26 + 0.44(ef_government) 
+
+For the average country on the Western side in the Cold War, their average human freedom score in the past decade has been 8.84 at an ef_government score of 0 (large government), and all else held constant, it is 0.11 points lower for every additional point in the ef_government score (smaller government).
+
+For the average country on the Soviet side in the Cold War, their average human freedom score in the past decade has been 4.26 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+
+$H_0$: $\beta_0$ = 0
+
+$H_A$: $\beta_1$ $\neq$ 0
+
+Our results are statistically significant, and the relationship between government size and overall human freedom does depend on a country’s Cold War status. Our test statistic is -6.67. The p-value (1.48e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and overall human freedom depending on a country’s Cold War status.
+
+In our particular case, it appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
+
+In terms of the effectiveness of our model, we obtain R^2 = 0.49. In the context of the problem, 0.49 of the variability in the response variable (overall human freedom) is explained by the model.
+
+### Linear regression of Cold War status and government size, in relation to personal freedom
+
+Our fitted linear regression model on the relationship between Cold War status and government size, and personal freedom, is as follows:
+
+Personal Freedom Score = 4.49 + 5.99(If Western) + 0.44(ef_government) - 0.72(ef_government * If Western)
+
+Personal Freedom Score for Western Countries: 10.48 - 0.28(ef_government)
+
+Personal Freedom Score for Post-Soviet Countries: 4.49 + 0.44(ef_government) 
+
+For the average country on the Western side in the Cold War, their average personal freedom score in the past decade has been 10.48 at an ef_government score of 0 (large government), and all else held constant, it is 0.28 points lower for every additional point in the ef_government score (smaller government).
+
+For the average country on the Soviet side in the Cold War, their average personal freedom score in the past decade has been 4.49 at an ef_government score of 0 (large government), and all else held constant, it is 0.44 points higher for every additional point in the ef_government score (smaller government).
+
+$H_0$: $\beta_0$ = 0
+
+$H_A$: $\beta_1$ $\neq$ 0
+
+Our results are statistically significant, and the relationship between government size and personal freedom does depend on a country’s Cold War status. Our test statistic is -6.41. The p-value (6.53e-10) is less than 0.05 at the alpha = 0.05 significance level, so we reject the null hypothesis. The data provide strong evidence that the true slope parameter is different from 0, and there is sufficient evidence to suggest that there is a difference in the relationship between government size and personal freedom depending on a country’s Cold War status.
+
+In our particular case, it appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
+
+In terms of the effectiveness of our model, we obtain R^2 = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
+
+### Women-Specific Freedoms
+ 
+### W-S freedom correlations 
+Women-specific and overall freedom had an observed correlation coefficient of 0.505. This moderate, linear, positive correlation between the two variables tell us that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
+
+Women-specific and economic freedom had an observed correlation coefficient of 0.32. This weak-to-moderate positive linear correlation is less strong than the correlation between women-specific freedom and overall freedom, but still means that countries with higher economic freedom typically also have higher W-S freedom. There are a few outliers, like before, that had high W-S freedom but low economic freedom. 
+
+Women-specific and personal freedom had an observed correlation coefficient of 0.56. This moderate positive linear correlation was quite similar to the correlation between women-specific freedom and overall freedom, indicating that countries with higher personal freedom typically also have higher W-S freedom. There are no obvious outliers, but a fairly large range of economic freedom scores that correspond to high women-specific freedom score, indicating that countries could have high or low economic freedom, but still have high women-specific freedom. 
+
+We calculated the observed difference between correlation coefficients of women-specific vs economic freedom and women-specific vs personal freedom to be 0.24. 
+
+### Bootstrap simulation difference in correlations
+
+Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+Significance level: $\alpha$ = 0.01
+
+Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. This means we rejected the null hypothesis, and found sufficient evidence to suggest that the difference in correlations between W-S freedom to personal freedom and W-S freedom to economic freedom was not zero. 
+
+### Women-Specific Freedoms and Religious Freedom 
+There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. Middle East and North Africa, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
+
+
+### Chi-Squared Test for Independence
+Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
+
+
 
 ### Conclusions
 Mean overall freedom has declined from 2008-2018, globally.
