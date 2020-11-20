@@ -427,7 +427,8 @@ ws_only <- ws_only%>%
   mutate(pf_identity_divorce = as.numeric(pf_identity_divorce))%>%
   mutate(pf_identity_sex_female = as.numeric(pf_identity_sex_female))%>%
 
-  mutate(ws_score = (((pf_identity_divorce + pf_identity_sex_female)/2) + pf_ss_women + pf_movement_women)/3)
+  mutate(ws_score = (((pf_identity_divorce + pf_identity_sex_female)/2) + 
+                       pf_ss_women + pf_movement_women)/3)
 ```
 
 ### Correlating Women-Specific Freedom to Overall Freedom
@@ -496,7 +497,8 @@ Women-specific and personal freedom had an observed correlation coefficient of 0
 
 ```{r ws-ef-pf-obs-diff-in-corr}
 obs_diff_corr <- ws_no_na%>%
-  summarize(obs_diff_corr = (cor(ws_score, pf_score_nowomen) - cor(ws_score, ef_score)))
+  summarize(obs_diff_corr = (cor(ws_score, pf_score_nowomen) - cor(ws_score, 
+                                                                   ef_score)))
 obs_diff_corr
 ```
 We calculated the observed difference between correlation coefficients of the above two visualizations (women-specific vs economic freedom and women-specific vs personal freedom) to be 0.24. On a scale of -1 to 1, this was a large enough difference that we wanted to test if we could truly say the correlations were different. 
@@ -517,7 +519,8 @@ for(i in 1:n_sims){
   indices <- sample(1:nrow(ws_no_na), replace = T)
   boot_cor <- ws_no_na %>% 
     slice(indices) %>%                    
-    summarize(boot_cor = (cor(ws_score, pf_score_nowomen) - cor(ws_score, ef_score))) %>% 
+    summarize(boot_cor = (cor(ws_score, pf_score_nowomen) - cor(ws_score, 
+                                                                ef_score))) %>% 
     pull()                                
   boot_distribution[i] <- boot_cor 
 }
@@ -618,13 +621,13 @@ Our test statistic was 13.408. If the null hypothesis were true, then the test s
 ### Results Summary
 Mean overall freedom has declined from 2008-2018, globally.
 
-Economic freedom is slightly higher than personal freedom in developingcountries, particularly in the Middle East & North Africa. Meanwhile, personal freedom scores appear to besignificantly higher than economic freedom scores in developed countries, particularly in Western Europe(and in Western countries overall).
+Economic freedom is slightly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom scores appear to be significantly higher than economic freedom scores in developed countries, particularly in Western Europe(and in Western countries overall).
 
-There is a moderate to strong positive correlation between economic freedom score and personalfreedom score.
+There is a moderate to strong positive correlation between economic freedom score and personal freedom score.
 
 Economic freedom scores tend to be lower than personal freedom scores around the world.
 
-There is a difference in the relationship between government size and overall human freedom depending on acountry’s Cold War status. Previously Soviet countries’ governments have been decreasing in size. Western countries’ governments have been increasing in size. Post-Soviet countries have smaller governments on average compared to Western countries. Smaller government does not necessarily lead to greater overall human freedom. 
+There is a difference in the relationship between government size and overall human freedom depending on a country’s Cold War status. Previously Soviet countries’ governments have been decreasing in size. Western countries’ governments have been increasing in size. Post-Soviet countries have smaller governments on average compared to Western countries. Smaller government does not necessarily lead to greater overall human freedom. 
 
 There is a moderate, linear, positive correlation between women-specific freedoms and overall human freedom.
 
@@ -632,9 +635,37 @@ Women-specific and economic freedom had a weak-to-moderate, positive, linear cor
 
 There is a difference in the correlation between women-specific freedom to personal freedom and women-specific freedom to economic freedom
 
-There is a general trend that regions with higher religious freedom score have higher women-specificfreedom score, and vice versa.
+There is a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa.
 
-There isa relationship between a country’s women’s freedom score being above or below average, and its religiousfreedom score being above or below average.
+There is a relationship between a country’s women’s freedom score being above or below average, and its religious freedom score being above or below average.
 
 ### Discussion
+_Economic and Personal Freedom Discussion_
 
+_Cold War / PostSoviet Countries Discussion_
+
+_Women-Specific Freedom Discussion_
+Great strides have been made globally and locally with regards to women's rights in the past century, even the past decade. However, around the world there are places where women's freedom is significantly hindered solely on the basis of their gender. Women may be refused access to political participation or education, die needlessly from childbirth, or just generally be prevented from making deeply personal choices in their private lives. Though child brides and genital mutilation may be the extremes on this scale, exploring women's freedoms and their relationship to other kinds of freedoms remains relevant. 
+
+It is not surprising to see that women-specific freedoms and overall human freedom are postively correlated. 
+
+...outline remaining...
+-developed countries have greater overall, also are further progressed on rights for women (source)
+-economic freedom is not as strongly correlated because it is about aquisition and exchange of capital, economic activity, not as much personal choice. if personal choice is limited / heightened generally, makes sense that this would hold for women as well.
+?what does this mean? ?future directions?
+-since all positively correlated, if theres something standing in the way of womens freedoms, maybe work on something more attainable for now and eventually all will follow suit
+-overall freedom is trending downward
+
+-religious freedom / women freedom -> exemplify places where religious freedom very strict, so is womens (case study-ish, source (somewhere middle east?))
+-discuss why sub saharan africa not fitting trend 
+-discuss why oceania so high on both
+-makes sense that they are linked explain why 
+?what does this mean? ?future directions?
+-only correlated, not causal, but increase one you'll prob eventually increase the other
+-limiting personal choice can limit safety w/regards to strict religious guidelines
+
+_Future Directions_
+1. Continue to track specific gains and losses of freedom. 
+2. Continue to identify and explain what links may exist among the assortment of freedoms and other variables
+3. Explore the different relationships between freedoms at different levels of development
+4. Determine if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms
