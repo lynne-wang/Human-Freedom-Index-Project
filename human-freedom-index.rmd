@@ -565,6 +565,8 @@ Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. 
 ### Women-Specific Freedoms and Religious Freedom 
 
 Heavy control by governing bodies on religion and women are often related, anecdotally, so we explored this a bit. First we visualized the average personal freedom category of religion for each region. The regions are colored by their mean women-specific freedom score.
+
+
 ```{r ws-religion-visualization, message=FALSE}
 region_ws <- ws_no_na %>% 
   group_by(region) %>% 
@@ -614,8 +616,25 @@ chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
 Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
 ### Results Summary
+Mean overall freedom has declined from 2008-2018, globally.
 
+Economic freedom is slightly higher than personal freedom in developingcountries, particularly in the Middle East & North Africa. Meanwhile, personal freedom scores appear to besignificantly higher than economic freedom scores in developed countries, particularly in Western Europe(and in Western countries overall).
 
+There is a moderate to strong positive correlation between economic freedom score and personalfreedom score.
+
+Economic freedom scores tend to be lower than personal freedom scores around the world.
+
+There is a difference in the relationship between government size and overall human freedom depending on acountry’s Cold War status. Previously Soviet countries’ governments have been decreasing in size. Western countries’ governments have been increasing in size. Post-Soviet countries have smaller governments on average compared to Western countries. Smaller government does not necessarily lead to greater overall human freedom. 
+
+There is a moderate, linear, positive correlation between women-specific freedoms and overall human freedom.
+
+Women-specific and economic freedom had a weak-to-moderate, positive, linear correlation. Women-specific and personal freedom had an observed correlation coefficient of 0.56. This moderate positive linear correlation. 
+
+There is a difference in the correlation between women-specific freedom to personal freedom and women-specific freedom to economic freedom
+
+There is a general trend that regions with higher religious freedom score have higher women-specificfreedom score, and vice versa.
+
+There isa relationship between a country’s women’s freedom score being above or below average, and its religiousfreedom score being above or below average.
 
 ### Discussion
 
