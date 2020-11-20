@@ -287,7 +287,8 @@ ef_govt_coldwar <- hfi_coldwar %>%
   mutate(mean_ef_government = mean(as.numeric(ef_government)))
 
 ggplot(data = ef_govt_coldwar, 
-       aes(x = as.factor(year), y = mean_ef_government, group = coldwar_side, color = coldwar_side)) +
+       aes(x = as.factor(year), y = mean_ef_government, group = coldwar_side, 
+           color = coldwar_side)) +
   geom_line(stat = "identity") +
   labs(x = "Year", y = "Smaller Government", 
        title = "Graph 6: Post-Soviet Countries Have Smaller Governments 
@@ -302,10 +303,12 @@ hf_coldwar <- hfi_coldwar %>%
   mutate(mean_hf = mean(as.numeric(hf_score)))
 
 ggplot(data = hf_coldwar, 
-       aes(x = as.factor(year), y = mean_hf, group = coldwar_side, color = coldwar_side)) +
+       aes(x = as.factor(year), y = mean_hf, group = coldwar_side, 
+           color = coldwar_side)) +
   geom_line(stat = "identity") +
   labs(x = "Year", y = "Human Freedom Score", 
-       title = "Graph 7: Post-Soviet Countries Less Free Than Western Countries",
+       title = 
+         "Graph 7: Post-Soviet Countries Less Free Than Western Countries",
        subtitle = "2008 to 2017")
 ```
 
@@ -443,8 +446,8 @@ ggplot(data = ws_no_na, aes(x = ws_score,
   geom_point(alpha = 0.5, position = "jitter") + 
   geom_smooth(method="lm") +
   labs(x = "Women-Specific Freedoms Score", y = "Overall Freedom Score", 
-       title = "Graph 8: Positive Correlation Between Women-Specific and Overall 
-       Freedom",
+       title = "Graph 8: Positive Correlation Between Women-Specific and 
+       Overall Freedom",
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
@@ -677,5 +680,6 @@ _Citations_
 ###NEED TO DO
 -limitations section 
 -future directions (where could we go deeper)
--fix labels on graph 2 (legend and axes)
 -finish presentation 
+-linear regression stuff?
+- general research question in introduction (see ppt ques. slide 5)
