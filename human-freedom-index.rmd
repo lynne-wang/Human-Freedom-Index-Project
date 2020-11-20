@@ -415,8 +415,6 @@ hfi <- hfi%>%
          + (pf_expression * 0.1)
          + (pf_association * 0.1)
          + (pf_religion * 0.1))
-
-#katea: include in methodology why you did math this way
 ```
 Women-specific freedoms were unweighted from overall freedom to remove any affect on the correlation. 
 
@@ -425,7 +423,8 @@ What is the correlation between women-specific freedom and overall freedom?
 ws_only <- hfi%>%
   select(pf_ss_women, pf_ss_women_fgm, pf_ss_women_inheritance, 
          pf_ss_women_inheritance_daughters, pf_ss_women_inheritance_widows,
-         pf_movement_women, pf_identity_sex_female, pf_identity_divorce, hfi_women_unweighted)
+         pf_movement_women, pf_identity_sex_female, pf_identity_divorce, 
+         hfi_women_unweighted, ef_score, pf_score_nowomen, pf_religion, region)
 ws_only <- ws_only%>%
   mutate(pf_ss_women = as.numeric(pf_ss_women))%>%
   mutate(pf_movement_women = as.numeric(pf_movement_women))%>%
@@ -438,7 +437,7 @@ ws_no_na <- ws_only%>%
     filter(!is.na(hfi_women_unweighted) & !is.na(ws_score)) 
 
 corr_ws_hf <- ws_no_na%>%
-  summarize(cor_ws_hfi = cor(hfi_women_unweighted, ws_score))
+  summarize(cor_ws_hfi = cor(ws_score, hfi_women_unweighted))
 corr_ws_hf
 ```
 The correlation of women-specific freedom and overall freedom is 0.505, indicating that there is a moderate positive correlation between the two. 
@@ -451,61 +450,146 @@ ggplot(data = ws_no_na, aes(x = ws_score,
   geom_point(alpha = 0.5, position = "jitter") + 
   geom_smooth(method="lm") +
   labs(x = "Women-Specific Freedoms Score", y = "Overall Freedom Score", 
-       title = "Positive Correlation Between Women-Specific and Overall Freedom",
+       title = "Graph 8: Positive Correlation Between Women-Specific and Overall 
+       Freedom",
        subtitle = "Data from 162 countries from 2008-2017")
 ```
 
 
 It appears that there is a somewhat linear positive correlation between overall freedom score, and women-specific freedom score, with a few outliers. 
 
-### W-S freedom to personal vs economic freedom - Bootstrap Simulation
+### W-S freedom to personal vs economic freedom 
+```{r ws-ef-scatter-and-corr, warning=FALSE, message=FALSE}
+ws_no_na <- ws_no_na%>%
+  filter(!is.na(ef_score) & !is.na(pf_score_nowomen))
+ggplot(data = ws_no_na, aes(x = ws_score, 
+                             y = ef_score)) +
+  geom_point(alpha = 0.5, position = "jitter") + 
+  geom_smooth(method="lm") +
+  labs(x = "Women-Specific Freedoms Score", y = "Economic Freedom Score", 
+       title = "Positive Correlation Between Women-Specific and Economic Freedom",
+       subtitle = "Data from 162 countries from 2008-2017")
+
+corr_ws_ef <- ws_no_na%>%
+  summarize(cor_ws_hfi = cor(ws_score, ef_score))
+corr_ws_ef
+```
+
+```{r ws-pf-scatter-and-corr, warning=FALSE, message=FALSE}
+ggplot(data = ws_no_na, aes(x = ws_score, 
+                             y = pf_score_nowomen)) +
+  geom_point(alpha = 0.5, position = "jitter") + 
+  geom_smooth(method="lm") +
+  labs(x = "Women-Specific Freedoms Score", y = "Economic Freedom Score", 
+       title = "Positive Correlation Between Women-Specific and Economic Freedom",
+       subtitle = "Data from 162 countries from 2008-2017")
+
+corr_ws_pf <- ws_no_na%>%
+  summarize(cor_ws_hfi = cor(ws_score, pf_score_nowomen))
+corr_ws_pf
+```
+```{r ws-ef-pf-obs-diff-in-corr}
+obs_diff_corr <- ws_no_na%>%
+  summarize(obs_diff_corr = (cor(ws_score, pf_score_nowomen) - cor(ws_score, ef_score)))
+obs_diff_corr
+```
+hypoth test that the observed difference in correlations is nonzero 
+
+
 
 ```{r ws-personal-economic-hyptohesis}
 set.seed(10)
 n_sims <- 2000
-boot_dist = numeric(n_sims) 
+boot_distribution = numeric(n_sims) 
 for(i in 1:n_sims){ 
   indices <- sample(1:nrow(ws_no_na), replace = T)
   boot_cor <- ws_no_na %>% 
     slice(indices) %>%                    
-    summarize(boot_cor = cor(ws_score, hfi_women_unweighted)) %>% 
+    summarize(boot_cor = (cor(ws_score, pf_score_nowomen) - cor(ws_score, ef_score))) %>% 
     pull()                                
-  boot_dist[i] <- boot_cor 
+  boot_distribution[i] <- boot_cor 
 }
 
-boot_cors = tibble(boot_dist)
+boot_cors = tibble(boot_distribution)
 
 mu_0 <- 0
 offset <- boot_cors %>% 
-  summarize(mu_0 - mean(boot_dist)) %>%
+  summarize(mu_0 - mean(boot_distribution)) %>%
   pull()
 
 boot_cors <- boot_cors %>%
-  mutate(shifted_cors = boot_dist + offset)
+  mutate(shifted_cors = boot_distribution + offset)
 
 boot_2 <- boot_cors%>%
   summarize(lower = quantile(shifted_cors, 0.005), 
             upper = quantile(shifted_cors, 0.995))
 boot_2
-```
-```{r bootstrap-ws-ef-pf-obs-diff}
-obs_cor <- ws_no_na %>% 
-  summarize(cor(ws_score, hfi_women_unweighted)) %>% 
-  pull()
-obs_cor
+
+boot_og <- boot_cors%>%
+  summarize(lower = quantile(boot_distribution, 0.005), 
+            upper = quantile(boot_distribution, 0.995))
+boot_og
 ```
 
+
 ```{r bootstrap-ws-ef-pf-val}
-#obs_cor <- mu_0 - obs_cor
-#boot_cors %>% 
-#  mutate(extreme = ifelse(shifted_means <= mu_0 - obs_diff |
-#                          shifted_means >= mu_0 + obs_diff, 1, 0)) %>% 
-#  summarize(p_val = mean(extreme))
+
+ggplot(data = boot_cors, aes(x = shifted_cors)) +
+  geom_histogram(color = "darkblue", fill = "skyblue") + 
+  labs(x = "Voice Jitter", 
+       title = "Bootstrap Distribution of Difference in Correlations Centered at 0 appears Normal") +
+  geom_vline(xintercept = c(boot_2$lower, boot_2$upper),
+             color = "red")
+
+
+boot_cors %>% 
+  mutate(extreme2 = ifelse(shifted_cors <= mu_0 - obs_diff_corr |
+                          shifted_cors >= mu_0 + obs_diff_corr, 1, 0)) %>% 
+  summarize(p_val2 = mean(extreme2))
+
 ```
 Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
 Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
 
+```{r ws-religion-visualization, message=FALSE}
+region_ws <- ws_no_na %>% 
+  group_by(region) %>% 
+  mutate(mean_pf_religion = mean(as.numeric(pf_religion)))%>% 
+  mutate(mean_ws = mean(as.numeric(ws_score)))%>% 
+  slice(1) %>% 
+  summarize(region, mean_pf_religion, mean_ws)
+
+mid <- ws_no_na%>%
+  summarize(mid = mean(ws_score))
+
+ggplot(data = region_ws, aes(x = reorder(region, mean_pf_religion), 
+                              y = mean_pf_religion, fill = mean_ws)) +
+  scale_fill_gradient(low = "red", high = "blue", na.value = NA) +
+  geom_col() + 
+  theme(axis.text.x = element_text(angle = 30)) +
+  labs(x = "Region", y = "Average Religion Freedom Score", 
+       title = "Graph 4: Title")
+
+```
+```{r ws-religion-chisq}
+mean_ws <- ws_no_na%>%
+  summarize(mean_ws = mean(ws_score))
+
+mean_rel <- hfi%>%
+  filter(pf_religion != "-")%>%
+  summarize(mean_rel = mean(pf_religion))
+
+ws_no_na<-ws_no_na%>%
+  mutate(religion_avg = ifelse(pf_religion > 7.834794, 
+                        "Above Average", "Below Average"))
+ws_no_na<-ws_no_na%>%
+  mutate(ws_average = ifelse(ws_score > 8.942593, 
+                        "Above Average", "Below Average"))
+
+chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
+```
+If the null hypothesis is true, 
 
 
 ### Results
