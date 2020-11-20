@@ -645,9 +645,14 @@ _Economic and Personal Freedom Discussion_
 _Cold War / PostSoviet Countries Discussion_
 
 _Women-Specific Freedom Discussion_
-Great strides have been made globally and locally with regards to women's rights in the past century, even the past decade. However, around the world there are places where women's freedom is significantly hindered solely on the basis of their gender. Women may be refused access to political participation or education, die needlessly from childbirth, or just generally be prevented from making deeply personal choices in their private lives. Though child brides and genital mutilation may be the extremes on this scale, exploring women's freedoms and their relationship to other kinds of freedoms remains relevant. 
 
-It is not surprising to see that women-specific freedoms and overall human freedom are postively correlated. 
+Great strides have been made globally and locally with regards to women's rights in the past century, even the past decade. However, around the world there are places where women's freedom is significantly hindered solely on the basis of their gender. Women may be refused access to political participation or education, die needlessly from childbirth, or just generally be prevented from making deeply personal choices in their private lives [1]. Though child brides and genital mutilation may be the extremes on this scale, exploring women's freedoms and their relationship to other kinds of freedoms remains relevant. 
+
+It is not surprising to see that women-specific freedoms and overall human freedom are positively correlated. What is slightly more interesting, though, is the fact that economic freedom and personal freedom have different correlations to women-specific freedom. We investigated earlier that economic freedom scores tend to be lower than personal freedom scores around the world, but that doesn't translate into an expectation that the correlations would be different. As the researchers define it, individuals have economic freedom when "property they acquire without the use of force, fraud, or theft is protected from physical invasions by others and they are free to use, exchange, or give their property as long as their actions do not violate the identical rights of others.” At first glance, one might expect that this would strongly correlate with women's freedoms because women might have less property rights or be prohibited from certain economic activities. However, inheritance rights were included in the personal freedoms category. Thus, though all of these measures of freedom (personal, economic, women-specific) are generally positively correlated with each other, they don't have the same strength of correlation. 
+
+We also saw in the above discussion that overall freedom is trending downward. If we know that women-specific freedoms and other freedoms are correlated, we might be able to investigate if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms, a possible future direction that would require continuing to track freedom measurements over time. 
+
+When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in 
 
 ...outline remaining...
 -developed countries have greater overall, also are further progressed on rights for women (source)
@@ -664,8 +669,17 @@ It is not surprising to see that women-specific freedoms and overall human freed
 -only correlated, not causal, but increase one you'll prob eventually increase the other
 -limiting personal choice can limit safety w/regards to strict religious guidelines
 
+_Limitations_
+Randomly sampled not measured
+Connections to real world
+We did analysis but there ar e a lot of confounding variables
+
 _Future Directions_
 1. Continue to track specific gains and losses of freedom. 
 2. Continue to identify and explain what links may exist among the assortment of freedoms and other variables
 3. Explore the different relationships between freedoms at different levels of development
 4. Determine if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms
+
+_Citations_
+1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets
+
