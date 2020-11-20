@@ -91,7 +91,8 @@ ggplot(freedom_map, mapping = aes(long, lat, group = group)) +
   coord_fixed(1.3) +
   geom_polygon(aes(fill = as.numeric(mean_hf)), color = "white") +
   scale_fill_distiller(palette ="RdBu", direction = 1) +
-  labs(title = "Graph 2: Average Freedom Around the World")
+  labs(title = "Graph 2: Average Freedom Around the World", x = "Longitude", 
+       y = "Latitude", fill = "Mean Human Freedom Index")
 ```
 
 As seen in graph 1, overall freedom has been on a decline from 2008 to 2017 (dropping from an average of ~7.1 to ~6.9), in accordance with our initial hypothesis. Graph 2 shows us that developed countries, particularly those in North America, Western Europe, and Oceania had higher overall freedom scores across the board (> 7), shown in dark blue. Meanwhile, developing countries in Africa had significantly lower overall freedom scores across the board (< 6), shown in dark red. Countries in South America, Eastern Europe, and Asia fell somewhere near the middle (6-7), shown in light blue or light red. 
@@ -320,8 +321,6 @@ In order to parse out a clearer relationship between Cold War status and governm
 
 
 ### RESULTS
-
-### Relationship Between Economic Freedom and Personal Freedom
 
 ### Bootstrap simulation based testing
 
@@ -652,9 +651,9 @@ It is not surprising to see that women-specific freedoms and overall human freed
 
 We also saw in the above discussion that overall freedom is trending downward. If we know that women-specific freedoms and other freedoms are correlated, we might be able to investigate if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms, a possible future direction that would require continuing to track freedom measurements over time. 
 
-When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in some middle eastern countries that practice Islam, there are laws that have burdened women in the family, the society, and the state[2]. They are prohibited from holding high political office, abortion, and divorce in some countries[2]. These are the some of the same countries that have low tolerance for other religions. In the human freedom index, this is correlated with lower scores for women's freedoms, and for religious freedom. It is important, however, to be sensitive to the fact that the values assigned in this study came from researchers in developed countries who may have a different perception on what negatively impacts women's freedoms than the women living in those situations. 
+When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in some middle eastern countries that practice Islam, there are laws that have burdened women in the family, the society, and the state[2]. They are prohibited from holding high political office, abortion, and divorce in some countries[2]. These are the some of the same countries that have low tolerance for other religions[3]. In the human freedom index, this is correlated with lower scores for women's freedoms, and for religious freedom. It is important, however, to be sensitive to the fact that the values assigned in this study came from researchers in developed countries who may have a different perception on what negatively impacts women's freedoms than the women living in those situations. 
 
-With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. T
+With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. When looking at why sub-saharan africa does not follow this trend, and has a lower women-specific freedom score than expected, we identified that, although there are a wide variety of religions and practices people follow, women in sub-saharan Africa face significant sexual discrimination and abuse, intimate violence, political marginalization, and economic deprivation[4]. 
 
 _Limitations_
 -Measured, not randomly sampled
