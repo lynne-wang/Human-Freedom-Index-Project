@@ -618,7 +618,7 @@ chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
 ```
 Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
-### Results Summary
+### Conclusions
 Mean overall freedom has declined from 2008-2018, globally.
 
 Economic freedom is slightly higher than personal freedom in developing countries, particularly in the Middle East & North Africa. Meanwhile, personal freedom scores appear to be significantly higher than economic freedom scores in developed countries, particularly in Western Europe(and in Western countries overall).
@@ -652,27 +652,14 @@ It is not surprising to see that women-specific freedoms and overall human freed
 
 We also saw in the above discussion that overall freedom is trending downward. If we know that women-specific freedoms and other freedoms are correlated, we might be able to investigate if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms, a possible future direction that would require continuing to track freedom measurements over time. 
 
-When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in 
+When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in some middle eastern countries that practice Islam, there are laws that have burdened women in the family, the society, and the state[2]. They are prohibited from holding high political office, abortion, and divorce in some countries[2]. These are the some of the same countries that have low tolerance for other religions. In the human freedom index, this is correlated with lower scores for women's freedoms, and for religious freedom. It is important, however, to be sensitive to the fact that the values assigned in this study came from researchers in developed countries who may have a different perception on what negatively impacts women's freedoms than the women living in those situations. 
 
-...outline remaining...
--developed countries have greater overall, also are further progressed on rights for women (source)
--economic freedom is not as strongly correlated because it is about aquisition and exchange of capital, economic activity, not as much personal choice. if personal choice is limited / heightened generally, makes sense that this would hold for women as well.
-?what does this mean? ?future directions?
--since all positively correlated, if theres something standing in the way of womens freedoms, maybe work on something more attainable for now and eventually all will follow suit
--overall freedom is trending downward
-
--religious freedom / women freedom -> exemplify places where religious freedom very strict, so is womens (case study-ish, source (somewhere middle east?))
--discuss why sub saharan africa not fitting trend 
--discuss why oceania so high on both
--makes sense that they are linked explain why 
-?what does this mean? ?future directions?
--only correlated, not causal, but increase one you'll prob eventually increase the other
--limiting personal choice can limit safety w/regards to strict religious guidelines
+With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. T
 
 _Limitations_
-Randomly sampled not measured
-Connections to real world
-We did analysis but there ar e a lot of confounding variables
+-Measured, not randomly sampled
+-Connections in real world
+-We did analysis but there are a lot of confounding variables
 
 _Future Directions_
 1. Continue to track specific gains and losses of freedom. 
@@ -682,4 +669,14 @@ _Future Directions_
 
 _Citations_
 1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets
+2. https://ips-dc.org/women_in_the_middle_east/
+3. https://www.wilsoncenter.org/article/us-report-religious-freedom-middle-east-and-north-africa
+4. https://www.du.edu/korbel/hrhw/researchdigest/africa/WomensRights.pdf
 
+
+
+###NEED TO DO
+-limitations section 
+-future directions (where could we go deeper)
+-fix labels on graph 2 (legend and axes)
+-finish presentation 
