@@ -4,6 +4,10 @@ author: "Team Platypus: Lynne Wang, Neel Gajjar, Kate Neal"
 output: pdf_document
 ---
 
+```{r set-warning-message-echo, warning=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
+```
+
 ```{r packages-data, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(ggplot2)
@@ -16,9 +20,6 @@ theme_set(
 hfi <- read_csv("data/hfi_cc_2019.csv") 
 ```
 
-```{r set-warning-message-echo}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
-```
 ### INTRODUCTION
 
 Freedom is one of the most crucial concepts in the modern world, playing a large role in human progress and the dignity of individuals. Freedom is of great value to humanity as it can protect humans against natural disasters, social problems, and economic issues by expanding the set of human choices and offering constructive democratic relations in society (Jafarzadeh 323). Though freedom itself is a rather abstract term that can be difficult to quantify, it can be broken down into various measures encompassing personal, civic, and economic freedom. We are particularly interested in negative liberty, defined as freedom from interference by other people, or the absence of coercive constraint. Positive liberty, on the other hand, has vastly different meanings for different individuals and is more difficult to measure. Moreover, one individual’s conception of positive liberty can interfere with others’ negative liberty, so it is more worthwhile to measure the latter. 
@@ -55,7 +56,7 @@ glimpse(hfi)
 
 ### Overall Human Freedom
 
-### Visualizations
+_Visualizations_
 
 To visualize the change in human freedom over the years, we plotted the year, as a factor, against our calculation of the mean human freedom score per year on a line graph. To visualize the average human freedom score for each country over the years, we calculated a mean human freedom score for each country and plotted the scores over a world map. 
 
@@ -156,10 +157,6 @@ offset <- boot_means %>%
   pull()
 boot_means <- boot_means %>%
   mutate(shifted_means = boot_dist + offset)
-boot_1 <- boot_means%>%
-  summarize(lower = quantile(shifted_means, 0.025), 
-            upper = quantile(shifted_means, 0.975))
-boot_1
 ```
 
 ```{r bootstrap-ef-pf-obs-diff}
@@ -175,18 +172,6 @@ boot_means %>%
   mutate(extreme = ifelse(shifted_means <= mu_0 - obs_diff |
                           shifted_means >= mu_0 + obs_diff, 1, 0)) %>% 
   summarize(p_val = mean(extreme))
-```
-
-```{r bootstrap-ef-pf-visualization, warning=FALSE, message=FALSE}
-ggplot(data = boot_means, aes(x = shifted_means)) +
-  geom_histogram(color = "darkblue", fill = "skyblue") + 
-  labs(x = "Difference in Economic and Personal Freedom Score", y = "Count", 
-       title = "Sufficient Evidence to Suggest Difference Between 
-       Economic and Personal Freedom Scores is Less than Zero",
-       subtitle = "500 bootstrap reps with Observed Prop and 95% CI shown") +
-  geom_vline(xintercept = c(boot_1$lower, boot_1$upper),
-             color = "red") +
-  geom_vline(linetype = "dashed", xintercept = c(mean_diff$mean_diff))
 ```
 
 ### Visualization of economic and personal freedom difference by region
@@ -240,7 +225,7 @@ It appears that there is a moderate to strong positive correlation between econo
 
 ### Relationship Between Cold War Status and Freedom
 
-### Visualizations
+_Visualizations_
 
 We decided to examine the difference in overall freedom between Post-Soviet and NATO countries, as well as their difference in mean government size. To visualize the difference in mean government size over the years between Post-Soviet and NATO countries, we first selected the main countries that were involved in the Cold War, and divided them into Post-Soviet and NATO countries. Our Post-Soviet group included Russia, Ukraine, Moldova, Uzbekistan, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan, Georgia, Azerbaijan, Armenia, Lithuania, Latvia, and Estonia. Our NATO/Western group included Belgium, Canada, Denmark, France, Germany, Greece, Iceland, Italy, Luxembourg, The Netherlands, Norway, Portugal, Spain, Turkey, The United Kingdom, and The United States. We first calculated the mean government size (using the ef_government variable, where a higher score indicates a smaller government and decreased government control) for each group per year and graphed this over a line graph. We then calculated the mean human freedom score for each group per year and graphed this over a line graph.
 
@@ -643,7 +628,7 @@ Our results are statistically significant, and the relationship between governme
 
 In our particular case, it appears that the effect of government size on personal freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall personal freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall personal freedom score when they have smaller governments.
 
-In terms of the effectiveness of our model, we obtain R^2 = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
+In terms of the effectiveness of our model, we obtain ${R^2}$ = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
 
 ### Women-Specific Freedoms
  
@@ -669,8 +654,8 @@ There appears to be a general trend that regions with higher religious freedom s
 
 
 ### Chi-Squared Test for Independence
-Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
+Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
 
 ### Conclusions
