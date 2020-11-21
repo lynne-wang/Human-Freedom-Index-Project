@@ -102,6 +102,7 @@ As seen in graph 1, overall freedom has been on a decline from 2008 to 2017 (dro
 ### Relationship Between Economic Freedom and Personal Freedom
 
 _Initial visualization of difference between economic and personal freedom_
+
 We did some exploratory data analysis to examine the difference in economic freedom and personal freedom scores across different countries. We calculated the mean economic freedom score and mean personal freedom score across the years for each country, and took their difference. We plotted these differences on a histogram.
 
 ```{r economic-and-personal-freedom}
@@ -387,7 +388,7 @@ ws_only <- ws_only%>%
                        pf_ss_women + pf_movement_women)/3)
 ```
 
-### Correlating Women-Specific Freedom to Overall Freedom
+_Correlating women-specific freedom to overall freedom_
 
 Now that the contribution of women-specific (W-S) freedoms should have no effect on the correlation with overall freedom, we did some initial visualization of countries' W-S score with their overall human freedom score. There appeared to be an overall linear positive correlation, with a few outliers that had high W-S freedom scores, but relatively low overall freedom scores. 
 
@@ -411,9 +412,10 @@ corr_ws_hf <- ws_no_na%>%
   summarize(cor_ws_hfi = cor(ws_score, hfi_women_unweighted))
 corr_ws_hf
 ```
-A correlation coefficient of 0.505 told us that there is a moderate, linear, positive correlation between the two variables. This means that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
+A correlation coefficient of 0.505 tells us that there is a moderate, linear, positive correlation between the two variables. This means that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
  
-### W-S freedom to personal vs economic freedom 
+### Women-Specific Freedom to Personal vs Economic Freedom 
+
 Through our bootstrapping earlier (see graph 3 and subsequent simulation based testing), we saw that the mean difference between economic and personal freedom was less 0. We wanted to explore the correlations between women-specific freedom and economic freedom, and women-specific freedom and (women-unweighted) personal freedoms, specifically on the difference between the two. Our initial hypothesis was that women-specific freedom would not have the same correlation with economic freedom and personal freedom, since indicators in the personal freedom category were more directly linked to allowing behavior or specific freedoms to be lived out while economic freedom is more related to the acquisition and exchange of property and capital by individuals. 
 
 We first did initial visualizations and calculated the correlation of women-specific freedoms, with economic and personal freedom, respectively, removing observations with null values. 
@@ -464,8 +466,10 @@ _Bootstrap simulation difference in correlations_
 We performed 2000 bootstrap simulations on a variable we created to describe the difference in correlations between women-specific (w-s) freedom to economic and personal freedom score. We conducted our test at the $\alpha$ = 0.01 significance level, which tests the two hypotheses below:
 
 
-Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
-Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+$H_0$: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+
+$H_A$: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+
 Significance level: $\alpha$ = 0.01
 ```{r ws-personal-economic-hyptohesis}
 set.seed(10)
@@ -496,7 +500,7 @@ boot_2 <- boot_cors%>%
             upper = quantile(shifted_cors, 0.995))
 boot_2
 ```
-Our initial 99% confidence interval for the hypothesis is -0.12 to 0.12, which does not include the observed value. This means that if we were to reconduct this study over and over, we would expect 99% of those intervals to contain the true difference in correlation, IF the null hypothesis were true. Since our observed value is outside that range, it begins to lead us to conclude to reject the null hypothesis, but we will visualized the distribution and caluated the p-value to make sure. 
+Our initial 99% confidence interval for the hypothesis is -0.12 to 0.12, which does not include the observed value. This means that if we were to reconduct this study over and over, we would expect 99% of those intervals to contain the true difference in correlation, IF the null hypothesis were true. Since our observed value is outside that range, it begins to lead us to conclude to reject the null hypothesis, but we will visualize the distribution and calculate the p-value to make sure. 
 
 ```{r bootstrap-ws-ef-pf-visualization-and-pval, message=FALSE}
 set.seed(10)
@@ -519,8 +523,6 @@ boot_cors %>%
 
 ```
 The distribution appears normal, and our observed statistic is well outside of the confidence interval. 
-
-Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. This means we rejected the null hypothesis, and found sufficient evidence to suggest that the difference in correlations between W-S freedom to personal freedom and W-S freedom to economic freedom was not zero. 
 
 ### Women-Specific Freedoms and Religious Freedom 
 
@@ -549,12 +551,12 @@ ggplot(data = region_ws, aes(x = reorder(region, mean_pf_religion),
        subtitle = "Sub-Saharan Africa does not fit trend",
        fill = "Mean W-S freedom score")
 ```
-There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. Middle East and North Africa, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
+There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. The Middle East and North Africa, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan Africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
 
 
-_Chi-Squared Test for Independence_
+_Chi-squared test for independence_
 
-In order to determine if above average women-specific freedom score and above average religious freedom score are associated, we performed a Chi-Squared test at the $\alpha$ = 0.05 significance level. Our null hypothesis is that there is no relationship between whether a country's women-specific freedom score is above or below average and whether their religious freedom score is above or below average. Our alternative hypothesis is that there is a relationship between the two, and the variables are not independent. We calculated the average freedom scores for each category and created a new variable for each that listed if the observation was above or below average for each criteria. 
+In order to determine if the above average women-specific freedom score and average religious freedom score are associated, we performed a Chi-Squared test at the $\alpha$ = 0.05 significance level. Our null hypothesis is that there is no relationship between whether a country's women-specific freedom score is above or below average and whether their religious freedom score is above or below average. Our alternative hypothesis is that there is a relationship between the two, and the variables are not independent. We calculated the average freedom scores for each category and created a new variable for each that listed if the observation was above or below average for each criteria. 
 
 ```{r ws-religion-chisq}
 mean_ws <- ws_no_na%>%
@@ -573,10 +575,11 @@ ws_no_na<-ws_no_na%>%
 
 chisq.test(table(ws_no_na$religion_avg, ws_no_na$ws_average))
 ```
-Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
 
 ### RESULTS
+
+### Relationship Between Economic Freedom and Personal Freedom
 
 _Bootstrap simulation based testing_
 
@@ -584,7 +587,7 @@ Our p-value is 0, and so we reject the null hypothesis at the $\alpha$ = 0.05 si
 
 ### Relationship Between Cold War Status and Freedom
 
-Linear regression of Cold War status and government size, in relation to overall freedom
+_Linear regression of Cold War status and government size, in relation to overall freedom_
 Our fitted linear regression model on the relationship between Cold War status and government size, and overall human freedom, is as follows:
 
 Human Freedom Score = 4.26 + 4.58(If Western) + 0.44(ef_government) - 0.55(ef_government * If Western)
@@ -605,7 +608,7 @@ Our results are statistically significant, and the relationship between governme
 
 In our particular case, it appears that the effect of government size on human freedom score depends on whether the country was on the Western or Soviet side during the Cold War. Countries that were on the Soviet side experience a higher overall human freedom score when they have smaller governments, while countries that were on the Western side experience a lower overall human freedom score when they have smaller governments.
 
-In terms of the effectiveness of our model, we obtain R^2 = 0.49. In the context of the problem, 0.49 of the variability in the response variable (overall human freedom) is explained by the model.
+In terms of the effectiveness of our model, we obtain ${R^2}$ = 0.49. In the context of the problem, 0.49 of the variability in the response variable (overall human freedom) is explained by the model.
 
 _Linear regression of Cold War status and government size, in relation to personal freedom_
 
@@ -632,44 +635,37 @@ In our particular case, it appears that the effect of government size on persona
 In terms of the effectiveness of our model, we obtain ${R^2}$ = 0.51. In the context of the problem, 0.51 of the variability in the response variable (personal freedom) is explained by the model.
 
 ### Women-Specific Freedoms
- 
-### W-S freedom correlations 
-Women-specific and overall freedom had an observed correlation coefficient of 0.505. This moderate, linear, positive correlation between the two variables tell us that countries with higher overall freedom scores are more likely to also have higher women-specific freedom scores, though the two are correlational, not causal. 
-
-Women-specific and economic freedom had an observed correlation coefficient of 0.32. This weak-to-moderate positive linear correlation is less strong than the correlation between women-specific freedom and overall freedom, but still means that countries with higher economic freedom typically also have higher W-S freedom. There are a few outliers, like before, that had high W-S freedom but low economic freedom. 
-
-Women-specific and personal freedom had an observed correlation coefficient of 0.56. This moderate positive linear correlation was quite similar to the correlation between women-specific freedom and overall freedom, indicating that countries with higher personal freedom typically also have higher W-S freedom. There are no obvious outliers, but a fairly large range of economic freedom scores that correspond to high women-specific freedom score, indicating that countries could have high or low economic freedom, but still have high women-specific freedom. 
-
-We calculated the observed difference between correlation coefficients of women-specific vs economic freedom and women-specific vs personal freedom to be 0.24. 
 
 _Bootstrap simulation difference in correlations_
 
-Null hypothesis: There is no difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
-Alt hypothesis: There is a difference in the average correlation between w-s freedom to personal freedom and w-s freedom to economic freedom
+$H_0$: There is no difference in the average correlation between W-S freedom to personal freedom and w-s freedom to economic freedom
+
+$H_A$: There is a difference in the average correlation between W-S freedom to personal freedom and w-s freedom to economic freedom
+
 Significance level: $\alpha$ = 0.01
 
-Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. This means we rejected the null hypothesis, and found sufficient evidence to suggest that the difference in correlations between W-S freedom to personal freedom and W-S freedom to economic freedom was not zero. 
+Our p value is 0, which is less than our significance level of $\alpha$ = 0.01. This means we reject the null hypothesis, and found sufficient evidence to suggest that the difference in correlations between W-S freedom to personal freedom and W-S freedom to economic freedom was not zero. 
 
 ### Women-Specific Freedoms and Religious Freedom 
-There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. Middle East and North Africa, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
+There appears to be a general trend that regions with higher religious freedom score have higher women-specific freedom score, and vice versa. The Middle East and North Africa region, which has the lowest religious freedom score, also has the lowest W-S freedom score. Sub-Saharan Africa does not fit with this pattern as clearly, with its moderate religious freedom score but a W-S score on the lower end. 
 
 
-_Chi-Squared Test for Independence_
+_Chi-squared test for independence_
 
 Our test statistic was 13.408. If the null hypothesis were true, then the test statistic should have a chi-squared distribution with 1 degree of freedom. The p-value of seeing our observed chi-squared statistic or even larger was 0.0002505. This is less than our $\alpha$ = 0.05 significance level, so we reject the null hypothesis. There is enough evidence for us to suggest that these two variables are not independent, meaning that there is a relationship between a country's women's freedom score being above or below average, and its religious freedom score being above or below average. 
 
 ### DISCUSSION
 _Economic and Personal Freedom Discussion_
 
-Through our analysis, we observed that the relationship between economic and personal freedom was not as simple as we’d originally predicted. While we predicted that economic freedom was positively correlated with other freedoms, particularly personal freedom, the minute details showed us a more nuanced relationship. The Pearson correlation coefficient we calculated between economic freedom score and personal freedom score was 0.67, which indicated a moderate to strong positive correlation between the two variables; meanwhile, our bootstrap simulation test of the difference between economic and personal freedom score per country found a statistically significant difference in the average country’s economic and personal freedom score (p-value = 0 at the $\alpha$ = 0.05 significance level). The average economic freedom score was 0.32 points lower than the average personal freedom score. Moreover, our visualization of the average difference in economic and personal freedom score grouped by continent (graph 4) indicated that continents with a greater proportion of developed countries like Western Europe, Eastern Europe, and North America had significantly higher personal freedom scores compared to economic freedom scores, while continents with a greater proportion of developing countries like the Middle East & North Africa had significantly greater economic freedom scores compared to personal freedom. 
+Through our analysis, we observed that the relationship between economic and personal freedom was not as simple as we’d originally predicted. While we predicted that economic freedom was positively correlated with other freedoms, particularly personal freedom, the minute details showed us a more nuanced relationship. The Pearson correlation coefficient we calculated between economic freedom score and personal freedom score was 0.67, which indicated a moderate to strong positive correlation between the two variables; meanwhile, our bootstrap simulation test of the difference between economic and personal freedom score per country found a statistically significant difference in the average country’s economic and personal freedom score (p-value = 0 at the $\alpha$ = 0.05 significance level). The average economic freedom score was 0.32 points lower than the average personal freedom score. Moreover, our visualization of the average difference in economic and personal freedom score grouped by continent (graph 4) indicated that continents with a greater proportion of developed countries like Western Europe, Eastern Europe, and North America had significantly higher personal freedom scores compared to economic freedom scores, while continents with a greater proportion of developing countries like the Middle East & North Africa had significantly greater economic freedom scores compared to personal freedom scores. 
 
-This raises an important question regarding whether unlimited freedom in all areas is necessarily optimal for the general well-being of the citizens of a country. For highly developed countries, it appears that having some restraints on economic freedom and a degree of government oversight, as opposed to a heavily laissez-faire model, can be beneficial to people’s personal freedoms. The Scandinavian countries, we found, were able to uphold high personal freedom scores despite lower economic freedom scores. Meanwhile, the U.S. has a higher economic freedom but a relatively lower personal freedom score (compared to many countries in Western Europe. This may be due to the U.S. government providing too much leeway to private companies to make higher profits, rather than guaranteeing individual citizens’ access to a stable base level of economic safety that would allow them greater personal freedoms. Perhaps in cases when economic and personal freedoms may come into friction with each other, the government should offer some amount of protection of personal freedoms instead of largely siding in favor with private enterprises. This may improve a country’s overall freedom, as well as the quality of life for a greater number of people in society. 
+This raises an important question regarding whether unlimited freedom in all areas is necessarily optimal for the general well-being of the citizens of a country. For highly developed countries, it appears that having some restraints on economic freedom and a degree of government oversight, as opposed to a heavily laissez-faire model, can be beneficial to people’s personal freedoms. The Scandinavian countries, for instance, were able to uphold high personal freedom despite lower economic freedom. Meanwhile, the U.S. has higher economic freedom but relatively lower personal freedom (compared to many countries in Western Europe. This may be due to the U.S. government providing too much leeway to private companies to make higher profits, rather than guaranteeing individual citizens’ access to a stable base level of economic safety that would allow them greater personal freedoms. Perhaps in cases when economic and personal freedoms may come into friction with each other, the government should offer some amount of protection of personal freedoms instead of largely siding in favor with private enterprises. This may improve a country’s overall freedom, as well as the quality of life for a greater number of people in society. 
 
-Regarding developing countries in the Middle East & North Africa, it appears that the relatively high economic freedom scores are related to the booming oil business in those countries. However, given the markedly lower personal freedom scores, it appears that the benefits of economic freedom are concentrated in the hands of only a few, likely the royal families and close private enterprises. We would dissuade government officials and researchers from viewing high economic freedom as a sign of a country’s overall freedom and well-being. We would like to emphasize that high economic freedom scores in and of themselves are not a cause for concern; rather, a developing country should take heed that personal freedom laws and regulations are not lagging too far behind in a period of greater economic development.
+Regarding developing countries in the Middle East & North Africa, it appears that the relatively high economic freedom scores are related to the booming oil business in those countries. However, given the markedly lower personal freedom scores, it appears that the benefits of economic freedom are concentrated in the hands of only a few, likely the royal families and close private enterprises. We would dissuade government officials and researchers from viewing high economic freedom as a sign of a country’s overall freedom and well-being. We would like to emphasize that high economic freedom scores in and of themselves are not a cause for concern; rather, a developing country should take heed that personal freedom laws and regulations are not lagging too far behind in a period of rapid economic development.
 
 _Cold War Status and Freedom Discussion_
 
-Our analysis of the difference in freedom and government size between Post-Soviet and Western/NATO countries also provided some unexpected results. While our initial visualizations (graphs 6 and 7) aligned with our initial hypotheses that NATO countries would have higher overall freedom scores compared to Post-Soviet countries, we also found that Post-Soviet countries have smaller governments, on average, than NATO countries (higher ef_government score). Our linear regression analysis on the relationship between Cold War status, government size, and their interaction on overall human freedom score found that while NATO countries had higher baseline human freedom scores compared to Post-Soviet countries, smaller government has a sizeable positive relationship with overall human freedom score in Post-Soviet countries. Meanwhile, smaller government had a slight negative relationship with overall human freedom score in NATO countries. Moreover, our linear regression analysis on the relationship between Cold War status, government size, and their interaction on personal freedom score found that smaller government has a sizeable positive relationship with personal freedom score in Post-Soviet countries. Meanwhile, smaller government had a sizeable negative relationship with personal freedom score in NATO countries. Our findings are statistically significant because the p-values for the relevant variables we performed the regression on are less than 0 at the $/alpha$ = 0.05 significance level.
+Our analysis of the difference in freedom and government size between Post-Soviet and Western/NATO countries also provided some unexpected results. While our initial visualizations (graphs 6 and 7) aligned with our initial hypotheses that NATO countries would have higher overall freedom scores compared to Post-Soviet countries, we also found that Post-Soviet countries have smaller governments, on average, than NATO countries (higher ef_government score). Our linear regression analysis on the relationship between Cold War status, government size, and their interaction on overall human freedom score found that while NATO countries had higher baseline human freedom scores compared to Post-Soviet countries, smaller government has a sizeable positive relationship with overall human freedom score in Post-Soviet countries. Meanwhile, smaller government had a slight negative relationship with overall human freedom score in NATO countries. Moreover, our linear regression analysis on the relationship between Cold War status, government size, and their interaction on personal freedom score found that smaller government has a sizable positive relationship with personal freedom score in Post-Soviet countries. Meanwhile, smaller government had a sizable negative relationship with personal freedom score in NATO countries. Our findings are statistically significant because the p-values for the relevant variables we performed the regression on are less than 0 at the $\alpha$ = 0.05 significance level.
 
 This suggests that perhaps there is no one-size-fits-all approach to how much government oversight is most beneficial for the citizens of a country. NATO countries have higher overall freedom scores compared to Post-Soviet countries, so it may be the case that some degree of government oversight on certain freedoms (i.e. economic ones designed mainly to benefit corporations) would allow for less interference to individuals’ personal freedoms. On the other hand, Post-Soviet countries have had a history of tighter state control, so relaxing that control would allow individuals less interference on their personal freedoms from strict government regulations. It appears that not enough regulation over private businesses is a greater threat to individuals’ personal freedom in NATO countries, while government overregulation over individuals’ lives is a more prominent threat to individuals’ personal freedom in Post-Soviet countries. Perhaps this could be extended to other countries as well: officials should carefully consider their governing approach depending on their country’s historical experiences with state control. In other words, limiting government presence might be beneficial from a baseline of high government control, while increasing government presence might be beneficial from a baseline of a more laissez-faire approach. 
 
@@ -681,17 +677,17 @@ It is not surprising to see that women-specific freedoms and overall human freed
 
 We also saw in the above discussion that overall freedom is trending downward. If we know that women-specific freedoms and other freedoms are correlated, we might be able to investigate if some types of freedom, economic or personal, are more conducive to the spread and sustenance of other freedoms, a possible future direction that would require continuing to track freedom measurements over time. 
 
-When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in some middle eastern countries that practice Islam, there are laws that have burdened women in the family, the society, and the state[2]. They are prohibited from holding high political office, abortion, and divorce in some countries[2]. These are the some of the same countries that have low tolerance for other religions[3]. In the human freedom index, this is correlated with lower scores for women's freedoms, and for religious freedom. It is important, however, to be sensitive to the fact that the values assigned in this study came from researchers in developed countries who may have a different perception on what negatively impacts women's freedoms than the women living in those situations. 
+When considering countries that have fewer rights for women, it is also interesting to see how it is overall related to religious freedom, since there are examples where the two are (at least seemingly) linked. For example, in some Middle Eastern countries that practice Islam, there are laws that have burdened women in the family, the society, and the state[2]. They are prohibited from holding high political office, abortion, and divorce in some countries[2]. These are the some of the same countries that have low tolerance for other religions[3]. In the Human Freedom Index, this is correlated with lower scores for women's freedoms, and for religious freedom. It is important, however, to be sensitive to the fact that the values assigned in this study came from researchers in developed countries who may have a different perception on what negatively impacts women's freedoms than the women living in those situations. 
 
-With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. When looking at why sub-saharan africa does not follow this trend, and has a lower women-specific freedom score than expected, we identified that, although there are a wide variety of religions and practices people follow, women in sub-saharan Africa face significant sexual discrimination and abuse, intimate violence, political marginalization, and economic deprivation[4]. 
+With this in mind, and the general trend thus far of freedoms being positively correlated with each other, it makes sense that women-specific freedoms and religious freedoms are not independent. When looking at why Sub-Saharan Africa does not follow this trend, and has a lower women-specific freedom score than expected, we identified that, although there are a wide variety of religions and practices people follow, women in Sub-Saharan Africa face significant sexual discrimination and abuse, intimate violence, political marginalization, and economic deprivation[4]. 
 
 _Limitations_
 
-In our analysis of the Human Freedom Index dataset, there are clear limitations that need to be recognized. One such limitation is that the data is not randomly selected and does not contain the randomness that is typically desired from a dataset. Another limitation is that though analysis was performed, it was done so in a manner that assumed the individual countries to be independent and not have regional factors that affected each others scores in one or more categories. This presence of confounding variables somewhat decreases the validity of the analysis since it is easy to recognize that regional conflicts would affect certain freedom scores rather than solely the policies or type of government present in a given country. 
+In our analysis of the Human Freedom Index dataset, there are clear limitations that need to be recognized. One such limitation is that the data is not randomly selected and does not contain the randomness that is typically desired from a dataset. Another limitation is that though analysis was performed, it was done so in a manner that assumed the individual countries to be independent and absent of regional factors that affected each others score's in one or more categories. This presence of confounding variables somewhat decreases the validity of the analysis since it is easy to recognize that regional conflicts would affect certain freedom scores rather than solely the policies or type of government present in a given country. 
 
 _Future Directions_
 
-If this project were to continue in the future there are a few key areas that would require further attention. First, it is necessary to continue tracking changes in freedom over time. Likewise, it is critical that further possible relationships be identified and explored among the assortment of freedoms and other variables. Another key area relates to exploring the different relationshops between freedom levels at different levels of development. Lastly, it would be greatly beneficial to determine if certain types of freedom (economic or social) are more likely to enable or allow other freedoms to emerge or be sustained. 
+If this project were to continue in the future there are a few key areas that would require further attention. First, it is necessary to continue tracking changes in freedom over time. Likewise, it is critical that further possible relationships be identified and explored among the assortment of freedoms and other variables. Another key area relates to exploring the different relationshops between freedom levels at different levels of economic development. Lastly, it would be greatly beneficial to determine if certain types of freedom (economic or social) are more likely to enable or allow other freedoms to emerge or be sustained. 
 
 ### CITATIONS
 1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets  
