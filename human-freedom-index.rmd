@@ -280,7 +280,8 @@ ggplot(data = ef_govt_coldwar,
   labs(x = "Year", y = "Smaller Government", 
        title = "Graph 6: Post-Soviet Countries Have Smaller Governments 
        Than Western Countries",
-       subtitle = "2008 to 2017, Higher Score = Smaller Government") +
+       subtitle = "2008 to 2017, Higher Score = Smaller Government",
+       color = "Cold War Side") +
   theme(axis.line.y = element_line(arrow = arrow()))
 
 hf_coldwar <- hfi_coldwar %>% 
@@ -296,7 +297,8 @@ ggplot(data = hf_coldwar,
   labs(x = "Year", y = "Human Freedom Score", 
        title = 
          "Graph 7: Post-Soviet Countries Less Free Than Western Countries",
-       subtitle = "2008 to 2017")
+       subtitle = "2008 to 2017",
+       color="Cold War Side")
 ```
 
 As seen in graphs 6 and 7, it appears that former Soviet countries’ governments have been decreasing in size, while Western countries’ governments have been increasing in size. Moreover, Post-Soviet countries appear to have smaller governments on average compared to Western countries, with about a difference of 1 point in ef_government. It appears that smaller government does not necessarily lead to greater overall human freedom, which differs from our initial hypothesis.
