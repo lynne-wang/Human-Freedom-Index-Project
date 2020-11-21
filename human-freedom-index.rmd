@@ -101,7 +101,7 @@ As seen in graph 1, overall freedom has been on a decline from 2008 to 2017 (dro
 
 ### Relationship Between Economic Freedom and Personal Freedom
 
-Initial visualization of difference between economic and personal freedom
+_Initial visualization of difference between economic and personal freedom_
 We did some exploratory data analysis to examine the difference in economic freedom and personal freedom scores across different countries. We calculated the mean economic freedom score and mean personal freedom score across the years for each country, and took their difference. We plotted these differences on a histogram.
 
 ```{r economic-and-personal-freedom}
@@ -693,15 +693,8 @@ _Future Directions_
 
 If this project were to continue in the future there are a few key areas that would require further attention. First, it is necessary to continue tracking changes in freedom over time. Likewise, it is critical that further possible relationships be identified and explored among the assortment of freedoms and other variables. Another key area relates to exploring the different relationshops between freedom levels at different levels of development. Lastly, it would be greatly beneficial to determine if certain types of freedom (economic or social) are more likely to enable or allow other freedoms to emerge or be sustained. 
 
-_Citations_  
+### CITATIONS
 1. https://blogs.worldbank.org/opendata/where-world-do-women-still-face-legal-barriers-own-and-administer-assets  
 2. https://ips-dc.org/women_in_the_middle_east/  
 3. https://www.wilsoncenter.org/article/us-report-religious-freedom-middle-east-and-north-africa  
 4. https://www.du.edu/korbel/hrhw/researchdigest/africa/WomensRights.pdf
-
-
-###NEED TO DO
--finish presentation 
--other things that I might be missing.
-- look over the rmd (perform edits)
-- 
