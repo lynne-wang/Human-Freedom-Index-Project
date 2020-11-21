@@ -318,9 +318,35 @@ As seen in graphs 6 and 7, it appears that former Soviet countries’ government
 
 In order to parse out a clearer relationship between Cold War status and government size, and overall freedom score, we performed a linear regression of Cold War side, government size (ef_government), and their interaction, on overall freedom score. 
 
+```{r linreg-coldwar-govt-size}
+coldwar_govtsize_reg <- hfi_coldwar %>% 
+  filter(hf_score != "-")
+
+m_hf_reg <- lm(as.numeric(hf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
+               data = coldwar_govtsize_reg)
+
+tidy(m_hf_reg) %>% 
+  arrange(estimate) 
+
+glance(m_hf_reg)$r.squared
+```
+
 ### Linear regression of Cold War status and government size, in relation to personal freedom
 
 In order to parse out a clearer relationship between Cold War status and government size, and personal freedom score, we performed a linear regression of Cold War side, government size (ef_government), and their interaction, on personal freedom score. 
+
+```{r p-linreg-coldwar-govt-size}
+p_coldwar_govtsize_reg <- hfi_coldwar %>% 
+  filter(pf_score != "-")
+
+m_pf_reg <- lm(as.numeric(pf_score) ~ as.numeric(ef_government) + coldwar_side + coldwar_side * as.numeric(ef_government), 
+               data = p_coldwar_govtsize_reg)
+
+tidy(m_pf_reg) %>% 
+  arrange(estimate) 
+
+glance(m_pf_reg)$r.squared
+```
 
 ### Women-Specific Freedoms
 
@@ -677,7 +703,11 @@ This raises an important question regarding whether unlimited freedom in all are
 
 Regarding developing countries in the Middle East & North Africa, it appears that the relatively high economic freedom scores are related to the booming oil business in those countries. However, given the markedly lower personal freedom scores, it appears that the benefits of economic freedom are concentrated in the hands of only a few, likely the royal families and close private enterprises. We would dissuade government officials and researchers from viewing high economic freedom as a sign of a country’s overall freedom and well-being. We would like to emphasize that high economic freedom scores in and of themselves are not a cause for concern; rather, a developing country should take heed that personal freedom laws and regulations are not lagging too far behind in a period of greater economic development.
 
-_Cold War / PostSoviet Countries Discussion_
+_Cold War Status and Freedom Discussion_
+
+Our analysis of the difference in freedom and government size between Post-Soviet and Western/NATO countries also provided some unexpected results. While our initial visualizations (graphs 6 and 7) aligned with our initial hypotheses that NATO countries would have higher overall freedom scores compared to Post-Soviet countries, we also found that Post-Soviet countries have smaller governments, on average, than NATO countries (higher ef_government score). Our linear regression analysis on the relationship between Cold War status, government size, and their interaction on overall human freedom score found that while NATO countries had higher baseline human freedom scores compared to Post-Soviet countries, smaller government has a sizeable positive relationship with overall human freedom score in Post-Soviet countries. Meanwhile, smaller government had a slight negative relationship with overall human freedom score in NATO countries. Moreover, our linear regression analysis on the relationship between Cold War status, government size, and their interaction on personal freedom score found that smaller government has a sizeable positive relationship with personal freedom score in Post-Soviet countries. Meanwhile, smaller government had a sizeable negative relationship with personal freedom score in NATO countries. Our findings are statistically significant because the p-values for the relevant variables we performed the regression on are less than 0 at the $/alpha$ = 0.05 significance level.
+
+This suggests that perhaps there is no one-size-fits-all approach to how much government oversight is most beneficial for the citizens of a country. NATO countries have higher overall freedom scores compared to Post-Soviet countries, so it may be the case that some degree of government oversight on certain freedoms (i.e. economic ones designed mainly to benefit corporations) would allow for less interference to individuals’ personal freedoms. On the other hand, Post-Soviet countries have had a history of tighter state control, so relaxing that control would allow individuals less interference on their personal freedoms from strict government regulations. It appears that not enough regulation over private businesses is a greater threat to individuals’ personal freedom in NATO countries, while government overregulation over individuals’ lives is a more prominent threat to individuals’ personal freedom in Post-Soviet countries. Perhaps this could be extended to other countries as well: officials should carefully consider their governing approach depending on their country’s historical experiences with state control. In other words, limiting government presence might be beneficial from a baseline of high government control, while increasing government presence might be beneficial from a baseline of a more laissez-faire approach. 
 
 _Women-Specific Freedom Discussion_
 
