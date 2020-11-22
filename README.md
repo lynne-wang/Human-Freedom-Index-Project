@@ -1,8 +1,8 @@
 # Human-Freedom-Index-Project
 _Variables from the original dataset:_  
-*year* <dbl> - A year from 2008-2017  
-*countries* <chr> - Country name  
-*region* <chr> - Region name  
+**year** <dbl> - A year from 2008-2017  
+**countries** <chr> - Country name  
+**region** <chr> - Region name  
 *hf_score* <chr> - Human Freedom score from 0-10  
 *pf_score* <chr> - Personal Freedom score from 0-10  
 *ef_score* <chr> - Economic Freedom score from 0-10  
